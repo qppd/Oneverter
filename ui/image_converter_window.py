@@ -39,4 +39,4 @@ class ImageConverterWindow(BaseWindow):
         content_frame.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
 
         # Instantiate the UI class, passing the content frame as the parent
-        self.image_ui = ImageConverterUI(content_frame) 
+        self.image_ui = ImageConverterUI(content_frame)
