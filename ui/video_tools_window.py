@@ -12,6 +12,7 @@ from converters.subtitle_tool import SubtitleToolUI
 from converters.speed_changer import SpeedChangerUI
 from converters.youtube_downloader import YouTubeDownloaderUI
 from converters.screen_recorder import ScreenRecorderUI
+from converters.metadata_editor import MetadataEditorUI
 
 class VideoToolsWindow(BaseWindow):
     """Main window for all video tools."""
@@ -64,6 +65,7 @@ class VideoToolsWindow(BaseWindow):
             {"icon": "⏩", "title": "Playback Speed", "desc": "Change video playback speed", "command": self.open_speed_changer},
             {"icon": "📥", "title": "YouTube Downloader", "desc": "Download videos from YouTube", "command": self.open_youtube_downloader},
             {"icon": "⏺️", "title": "Screen Recorder", "desc": "Record your screen with audio", "command": self.open_screen_recorder},
+            {"icon": "📝", "title": "Metadata Editor", "desc": "Edit video title, author, etc.", "command": self.open_metadata_editor},
         ]
 
         # Make the grid responsive
@@ -257,6 +259,19 @@ class VideoToolsWindow(BaseWindow):
 
         # Instantiate the UI class, passing the scrollable frame as the parent
         self.screen_recorder_ui = ScreenRecorderUI(self.scrollable_frame)
+
+    def open_metadata_editor(self):
+        # Clear the current view and show the metadata editor UI
+        for widget in self.scrollable_frame.winfo_children():
+            widget.destroy()
+
+        self.scrollable_frame.grid_columnconfigure(0, weight=1)
+        self.scrollable_frame.grid_columnconfigure(1, weight=0)
+        self.scrollable_frame.grid_columnconfigure(2, weight=0)
+        self.scrollable_frame.grid_columnconfigure(3, weight=0)
+
+        # Instantiate the UI class, passing the scrollable frame as the parent
+        self.metadata_editor_ui = MetadataEditorUI(self.scrollable_frame)
 
     def open_tool(self, tool_name):
         """Placeholder for opening other tools."""

@@ -19,10 +19,20 @@ Oneverter is a modern, user-friendly desktop application built with Python and C
 - Background removal using AI
 - Batch image processing
 
-### 🎥 Video Converters (Coming Soon)
-- Video format conversion (MP4 ↔ AVI ↔ MOV ↔ MKV)
-- Video to image extraction
-- Video compression and trimming
+### 🎥 Video Tools
+A comprehensive suite of tools for all your video editing needs:
+- **Video Converter:** Convert between MP4, AVI, WebM, and GIF, with options for resolution, FPS, and codec.
+- **Trim & Cut:** Easily trim or cut sections of your videos.
+- **Merge Videos:** Combine multiple video clips into a single file, with an optional fade transition.
+- **Add/Remove Audio:** Mute, replace, or add a new audio track to your videos.
+- **Resize & Crop:** Change video dimensions or crop to a specific area.
+- **Text & Watermark:** Overlay custom text or a logo onto your videos with position and opacity controls.
+- **Convert to GIF:** Create animated GIFs from your video clips with options for duration and looping.
+- **Extract Frames:** Save video frames as a sequence of images (PNG/JPG).
+- **Subtitle Tool:** Burn subtitles from an SRT file directly into your video.
+- **Playback Speed:** Change the playback speed of your videos (e.g., 0.5x, 1.5x, 2x).
+- **YouTube Downloader:** Download videos from YouTube in various formats and resolutions.
+- **Screen Recorder:** Record your screen, with an option to include audio from your microphone.
 
 ### 🎵 Audio Converters (Coming Soon)
 - Audio format conversion (MP3 ↔ WAV ↔ FLAC ↔ AAC)
@@ -106,20 +116,31 @@ Oneverter/
 ├── converters/                 # Modules for conversion LOGIC and UI building
 │   ├── __init__.py
 │   ├── base_converter.py
-│   ├── document_converter.py     # Contains DocumentConverter and DocumentConverterUI
+│   ├── document_converter.py
+│   ├── video_converter.py
+│   ├── video_trimmer.py
+│   ├── video_merger.py
+│   ├── video_audio_editor.py
+│   ├── video_resizer.py
+│   ├── video_watermarker.py
+│   ├── video_to_gif_converter.py
+│   ├── frame_extractor.py
+│   ├── subtitle_tool.py
+│   ├── speed_changer.py
+│   ├── youtube_downloader.py
+│   ├── screen_recorder.py
 │   ├── image_converter.py        # (UI Placeholder)
-│   ├── video_converter.py        # (UI Placeholder)
 │   ├── audio_converter.py        # (UI Placeholder)
 │   ├── archive_converter.py      # (UI Placeholder)
 │   └── data_converter.py         # (UI Placeholder)
 │
 ├── ui/                         # WINDOW classes that host the UI
 │   ├── __init__.py
-│   ├── base_window.py            # Base classes for all windows (BaseMainApp, BaseWindow)
-│   ├── converter_window.py       # Main hub for selecting a converter
-│   ├── document_converter_window.py # Window for the document converter
+│   ├── base_window.py
+│   ├── converter_window.py
+│   ├── video_tools_window.py
+│   ├── document_converter_window.py
 │   ├── image_converter_window.py
-│   ├── video_converter_window.py
 │   ├── audio_converter_window.py
 │   ├── archive_converter_window.py
 │   └── data_converter_window.py
@@ -163,14 +184,17 @@ class MyConverter(BaseConverter):
 ### Core Dependencies
 - `customtkinter` - Modern GUI framework
 - `Pillow` - Image processing
+- `moviepy` - Video editing and processing
+- `yt-dlp` - YouTube video downloading
+- `pysrt` - Subtitle file parsing
+- `opencv-python` - Video processing (for screen recording)
+- `pyautogui` - Screen capture
+- `sounddevice` - Audio recording
 
 ### Future Dependencies (commented in requirements.txt)
 - `pdf2docx` - PDF to DOCX conversion
 - `python-docx` - Word document handling
 - `PyPDF2` - PDF processing
-- `opencv-python` - Video processing
-- `moviepy` - Video editing
-- `pydub` - Audio processing
 - `rembg` - Background removal
 - `pandas` - Data processing
 
