@@ -1,0 +1,31 @@
+# Oneverter Dependencies
+
+# GUI Framework
+customtkinter>=5.2.0
+
+# Image Processing
+Pillow>=10.0.0
+
+# Document Processing
+pdf2docx>=0.5.6
+python-docx>=1.1.2
+PyPDF2>=3.0.1
+reportlab>=4.2.0
+docx2pdf>=0.1.8
+
+# Video Processing (for future implementation)
+# opencv-python>=4.8.0
+# moviepy>=1.0.3
+
+# Audio Processing (for future implementation)
+# pydub>=0.25.1
+
+# Background Removal (for future implementation)
+# rembg>=2.0.0
+
+# Data Processing (for future implementation)
+# pandas>=2.0.0
+# openpyxl>=3.1.0
+
+# Archive Handling (for future implementation)
+# py7zr>=0.20.0 
