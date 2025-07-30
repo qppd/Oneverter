@@ -5,7 +5,7 @@ from converters.audio_converter import AudioConverter
 import os
 import yt_dlp
 import threading
-from gtts import gTTS
+import pyttsx3
 import pygame
 from vosk import Model, KaldiRecognizer
 import json
@@ -15,12 +15,30 @@ from pydub import AudioSegment
 from pydub.silence import split_on_silence
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
+from .animated_spinner import AnimatedSpinner
 
 class AudioConverterWindow(BaseWindow):
     def __init__(self, parent):
         super().__init__(parent, title="Oneverter - Audio Converter", geometry="1024x768")
         self.converter = AudioConverter()
+
+        # Initialize pyttsx3 engine
+        self.tts_engine = pyttsx3.init()
+        self.voices = self.tts_engine.getProperty('voices')
+        self.voice_map = {f"{v.name} ({v.gender})": v.id for v in self.voices}
+
         self.create_widgets()
+        
+        # Create a single loading spinner for the window
+        self.loading_spinner = AnimatedSpinner(self, "assets/loading_spinner.gif")
+
+    def show_loading(self):
+        """Show the loading spinner."""
+        self.loading_spinner.show()
+
+    def hide_loading(self):
+        """Hide the loading spinner."""
+        self.loading_spinner.hide()
 
     def create_widgets(self):
         # Header
@@ -183,11 +201,11 @@ class AudioConverterWindow(BaseWindow):
         options_frame = ctk.CTkFrame(tts_frame)
         options_frame.pack(fill="x", pady=(0, 20))
 
-        lang_label = ctk.CTkLabel(options_frame, text="Language:")
-        lang_label.pack(side="left", padx=(0, 10))
-        self.tts_lang_var = ctk.StringVar(value="en")
-        lang_menu = ctk.CTkOptionMenu(options_frame, variable=self.tts_lang_var, values=["en", "es", "fr", "de"])
-        lang_menu.pack(side="left")
+        voice_label = ctk.CTkLabel(options_frame, text="Voice:")
+        voice_label.pack(side="left", padx=(0, 10))
+        self.tts_voice_var = ctk.StringVar(value=list(self.voice_map.keys())[0])
+        voice_menu = ctk.CTkOptionMenu(options_frame, variable=self.tts_voice_var, values=list(self.voice_map.keys()))
+        voice_menu.pack(side="left", padx=(0, 20))
 
         # Actions
         action_frame = ctk.CTkFrame(tts_frame)
@@ -477,6 +495,10 @@ class AudioConverterWindow(BaseWindow):
         if not save_path:
             return
 
+        self.show_loading()
+        threading.Thread(target=self._remove_vocals_thread, args=(filepath, save_path), daemon=True).start()
+
+    def _remove_vocals_thread(self, filepath, save_path):
         try:
             from pydub import AudioSegment
 
@@ -500,6 +522,8 @@ class AudioConverterWindow(BaseWindow):
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to remove vocals: {e}")
+        finally:
+            self.hide_loading()
 
     def select_effects_file(self):
         filepath = filedialog.askopenfilename(filetypes=[("Audio Files", "*.wav *.mp3 *.m4a"), ("All files", "*.*")])
@@ -520,6 +544,10 @@ class AudioConverterWindow(BaseWindow):
         if not save_path:
             return
 
+        self.show_loading()
+        threading.Thread(target=self._apply_effects_thread, args=(filepath, save_path), daemon=True).start()
+
+    def _apply_effects_thread(self, filepath, save_path):
         try:
             from pydub import AudioSegment
             from pydub.effects import low_pass_filter
@@ -547,6 +575,8 @@ class AudioConverterWindow(BaseWindow):
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to apply effects: {e}")
+        finally:
+            self.hide_loading()
 
     def toggle_split_options(self):
         if self.split_method_var.get() == "silence":
@@ -570,7 +600,11 @@ class AudioConverterWindow(BaseWindow):
         output_dir = filedialog.askdirectory(title="Select Output Folder for Split Files")
         if not output_dir:
             return
+            
+        self.show_loading()
+        threading.Thread(target=self._split_file_thread, args=(filepath, output_dir), daemon=True).start()
 
+    def _split_file_thread(self, filepath, output_dir):
         try:
             from pydub import AudioSegment
             from pydub.silence import split_on_silence
@@ -580,7 +614,7 @@ class AudioConverterWindow(BaseWindow):
             if self.split_method_var.get() == "silence":
                 min_silence_len = int(self.min_silence_len_var.get())
                 silence_thresh = int(self.silence_thresh_var.get())
-                chunks = split_on_silence(audio, min_silence_len=min_silence_len, silence_thresh=silence_thresh)
+                chunks = split_on_silence(audio, min_silence_len=min_silence_len, silence_thresh=silence_thresh, keep_silence=200)
             else: # Split by time
                 duration_s = int(self.split_duration_var.get())
                 duration_ms = duration_s * 1000
@@ -596,6 +630,8 @@ class AudioConverterWindow(BaseWindow):
             messagebox.showinfo("Success", f"Audio split into {len(chunks)} chunks in {output_dir}")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to split file: {e}")
+        finally:
+            self.hide_loading()
 
     def add_merge_files(self):
         filepaths = filedialog.askopenfilenames(
@@ -628,6 +664,10 @@ class AudioConverterWindow(BaseWindow):
         if not save_path:
             return
 
+        self.show_loading()
+        threading.Thread(target=self._merge_files_thread, args=(files_to_merge, save_path), daemon=True).start()
+
+    def _merge_files_thread(self, files_to_merge, save_path):
         try:
             from pydub import AudioSegment
             
@@ -641,6 +681,8 @@ class AudioConverterWindow(BaseWindow):
             messagebox.showinfo("Success", f"Files merged successfully and saved to {save_path}")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to merge files: {e}")
+        finally:
+            self.hide_loading()
 
 
     def start_recording(self):
@@ -717,13 +759,21 @@ class AudioConverterWindow(BaseWindow):
             messagebox.showerror("Error", "Please enter some text.")
             return
 
-        lang = self.tts_lang_var.get()
+        selected_voice_id = self.voice_map[self.tts_voice_var.get()]
 
+        self.show_loading()
+        threading.Thread(target=self._convert_to_speech_thread, args=(text, selected_voice_id), daemon=True).start()
+
+    def _convert_to_speech_thread(self, text, voice_id):
         try:
             self.tts_button.configure(state="disabled")
-            tts = gTTS(text=text, lang=lang)
-            self.tts_audio_path = "temp_tts.mp3"
-            tts.save(self.tts_audio_path)
+
+            self.tts_engine.setProperty('voice', voice_id)
+            # Save as WAV to avoid potential MP3 corruption issues with pygame
+            self.tts_audio_path = "temp_tts.wav"
+            self.tts_engine.save_to_file(text, self.tts_audio_path)
+            self.tts_engine.runAndWait()
+
             self.play_button.configure(state="normal")
             self.save_button.configure(state="normal")
             messagebox.showinfo("Success", "Text converted to speech.")
@@ -731,6 +781,7 @@ class AudioConverterWindow(BaseWindow):
             messagebox.showerror("Error", f"Failed to convert text to speech:\n{e}")
         finally:
             self.tts_button.configure(state="normal")
+            self.hide_loading()
 
     def play_speech(self):
         if self.tts_audio_path and os.path.exists(self.tts_audio_path):
@@ -741,11 +792,23 @@ class AudioConverterWindow(BaseWindow):
 
     def save_speech(self):
         if self.tts_audio_path and os.path.exists(self.tts_audio_path):
-            save_path = filedialog.asksaveasfilename(defaultextension=".mp3", filetypes=[("MP3 files", "*.mp3"), ("All files", "*.*")])
+            save_path = filedialog.asksaveasfilename(
+                defaultextension=".wav",
+                filetypes=[("WAV files", "*.wav"), ("MP3 files", "*.mp3"), ("All files", "*.*")]
+            )
             if save_path:
-                import shutil
-                shutil.copy(self.tts_audio_path, save_path)
-                messagebox.showinfo("Success", f"Audio saved to {save_path}")
+                try:
+                    if save_path.lower().endswith(".mp3"):
+                        # Convert WAV to MP3 for saving
+                        audio = AudioSegment.from_wav(self.tts_audio_path)
+                        audio.export(save_path, format="mp3")
+                    else:
+                        # Just copy the WAV file
+                        import shutil
+                        shutil.copy(self.tts_audio_path, save_path)
+                    messagebox.showinfo("Success", f"Audio saved to {save_path}")
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to save file: {e}")
         else:
             messagebox.showerror("Error", "No audio to save.")
 
@@ -761,23 +824,37 @@ class AudioConverterWindow(BaseWindow):
             messagebox.showerror("Error", "Please select a valid audio file.")
             return
 
-        # For Vosk, WAV format is preferred. We might need to convert first.
-        # This is a simplified example assuming a compatible WAV file.
-        # A more robust solution would convert the input audio to the required format.
-        
+        self.show_loading()
+        threading.Thread(target=self._start_transcription_thread, args=(filepath,), daemon=True).start()
+
+    def _start_transcription_thread(self, filepath):
         try:
             # This is a placeholder for model loading. In a real app, you'd want to
             # manage model downloads and selection more gracefully.
             model_path = "vosk-model-small-en-us-0.15" # Example model path
             if not os.path.exists(model_path):
                 messagebox.showerror("Error", f"Vosk model not found at {model_path}. Please download it.")
+                self.hide_loading()
                 return
 
             self.stt_start_button.configure(state="disabled")
             self.stt_output.delete("1.0", "end")
 
             model = Model(model_path)
+            
+            # Convert to WAV if necessary
+            if not filepath.lower().endswith(".wav"):
+                wav_path = "temp_stt_input.wav"
+                sound = AudioSegment.from_file(filepath)
+                sound.export(wav_path, format="wav")
+                filepath = wav_path
+
             wf = wave.open(filepath, "rb")
+            if wf.getnchannels() != 1 or wf.getsampwidth() != 2 or wf.getcomptype() != "NONE":
+                 messagebox.showerror("Error", "Audio file must be WAV format mono PCM.")
+                 self.hide_loading()
+                 return
+            
             rec = KaldiRecognizer(model, wf.getframerate())
             rec.SetWords(True)
             
@@ -789,16 +866,21 @@ class AudioConverterWindow(BaseWindow):
                 if rec.AcceptWaveform(data):
                     result = json.loads(rec.Result())
                     self.stt_output.insert("end", result['text'] + " ")
-
+                else:
+                    partial = json.loads(rec.PartialResult())
+                    # You can update the UI with partial results here if desired
+            
             final_result = json.loads(rec.FinalResult())
             self.stt_output.insert("end", final_result['text'])
 
             self.stt_save_button.configure(state="normal")
+            messagebox.showinfo("Success", "Transcription complete.")
 
         except Exception as e:
             messagebox.showerror("Error", f"Transcription failed: {e}")
         finally:
             self.stt_start_button.configure(state="normal")
+            self.hide_loading()
 
     def save_transcription(self):
         text = self.stt_output.get("1.0", "end-1c")
@@ -826,6 +908,7 @@ class AudioConverterWindow(BaseWindow):
 
         self.download_button.configure(state="disabled")
         self.download_progress.set(0)
+        self.show_loading()
 
         threading.Thread(target=self._download_thread, args=(url, download_type, output_path), daemon=True).start()
 
@@ -855,6 +938,7 @@ class AudioConverterWindow(BaseWindow):
         finally:
             self.download_button.configure(state="normal")
             self.download_progress.set(0)
+            self.hide_loading()
 
     def download_progress_hook(self, d):
         if d['status'] == 'downloading':
@@ -902,32 +986,41 @@ class AudioConverterWindow(BaseWindow):
             messagebox.showerror("Error", "Output folder not found.")
             return
 
+        self.show_loading()
+        threading.Thread(target=self._start_conversion_thread, args=(files_to_convert, output_folder), daemon=True).start()
+
+    def _start_conversion_thread(self, files_to_convert, output_folder):
         total_files = len(files_to_convert)
         self.progress_bar.set(0)
         
-        for i, filepath in enumerate(files_to_convert):
-            original_dir = os.path.dirname(filepath)
-            filename = os.path.basename(filepath)
-            name, _ = os.path.splitext(filename)
-            output_format = self.format_var.get().lower()
-            
-            save_dir = output_folder if not self.same_folder_var.get() else original_dir
-            new_filepath = os.path.join(save_dir, f"{name}.{output_format}")
+        try:
+            for i, filepath in enumerate(files_to_convert):
+                original_dir = os.path.dirname(filepath)
+                filename = os.path.basename(filepath)
+                name, _ = os.path.splitext(filename)
+                output_format = self.format_var.get().lower()
+                
+                save_dir = output_folder if not self.same_folder_var.get() else original_dir
+                new_filepath = os.path.join(save_dir, f"{name}.{output_format}")
 
-            options = {
-                "format": self.format_var.get(),
-                "bitrate": self.bitrate_var.get(),
-                "trim": {
-                    "start": float(self.start_trim_var.get()) if self.start_trim_var.get() else 0,
-                    "end": float(self.end_trim_var.get()) if self.end_trim_var.get() else None,
-                },
-                "volume": self.volume_var.get()
-            }
+                options = {
+                    "format": self.format_var.get(),
+                    "bitrate": self.bitrate_var.get(),
+                    "trim": {
+                        "start": float(self.start_trim_var.get()) if self.start_trim_var.get() else 0,
+                        "end": float(self.end_trim_var.get()) if self.end_trim_var.get() else None,
+                    },
+                    "volume": self.volume_var.get()
+                }
 
-            if self.converter.convert(filepath, new_filepath, options):
-                progress = (i + 1) / total_files
-                self.progress_bar.set(progress)
-                self.update_idletasks() # Force UI update
+                if self.converter.convert(filepath, new_filepath, options):
+                    progress = (i + 1) / total_files
+                    self.progress_bar.set(progress)
+                    self.update_idletasks() # Force UI update
 
-        messagebox.showinfo("Success", "All files converted successfully!")
-        self.progress_bar.set(0) 
+            messagebox.showinfo("Success", "All files converted successfully!")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred during conversion: {e}")
+        finally:
+            self.progress_bar.set(0)
+            self.hide_loading() 
