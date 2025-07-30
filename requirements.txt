@@ -1,0 +1,7 @@
+customtkinter
+bcrypt
+authlib[httpx]
+python-dotenv
+Pillow
+moviepy
+pydub 

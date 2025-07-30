@@ -5,6 +5,23 @@ from pathlib import Path
 from moviepy.editor import VideoFileClip
 
 
+def get_app_data_path(file_name: str) -> str:
+    """
+    Returns the full path to a file in the application's data directory.
+    Creates the directory if it doesn't exist.
+    """
+    # Use APPDATA on Windows, XDG_CONFIG_HOME or .config on Linux/Mac
+    if os.name == 'nt':
+        app_data_dir = Path(os.getenv('APPDATA')) / 'Oneverter'
+    else:
+        app_data_dir = Path.home() / '.config' / 'Oneverter'
+    
+    # Create the directory if it doesn't exist
+    app_data_dir.mkdir(parents=True, exist_ok=True)
+    
+    return str(app_data_dir / file_name)
+
+
 def get_file_size(file_path: str) -> str:
     """Get human readable file size"""
     size = os.path.getsize(file_path)
