@@ -2,7 +2,7 @@ import customtkinter as ctk
 from .base_window import BaseWindow
 from .document_converter_window import DocumentConverterWindow
 from .image_converter_window import ImageConverterWindow
-from .video_converter_window import VideoConverterWindow
+from .video_tools_window import VideoToolsWindow
 from .audio_converter_window import AudioConverterWindow
 from .archive_converter_window import ArchiveConverterWindow
 from .data_converter_window import DataConverterWindow
@@ -53,7 +53,7 @@ class ConverterWindow(BaseWindow):
         categories = [
             {"icon": "📄", "title": "Document Converter", "desc": "Convert PDF, DOCX, TXT files", "window": DocumentConverterWindow},
             {"icon": "🖼️", "title": "Image Converter", "desc": "Convert, resize, compress images", "window": ImageConverterWindow},
-            {"icon": "🎥", "title": "Video Converter", "desc": "Convert video formats, extract frames", "window": VideoConverterWindow},
+            {"icon": "🛠️", "title": "Video Tools", "desc": "Convert, trim, merge, and more", "window": VideoToolsWindow},
             {"icon": "🎵", "title": "Audio Converter", "desc": "Convert formats, extract from video", "window": AudioConverterWindow},
             {"icon": "📦", "title": "Archive Converter", "desc": "Convert archives, extract files", "window": ArchiveConverterWindow},
             {"icon": "📊", "title": "Data Converter", "desc": "Convert CSV, Excel, JSON, XML", "window": DataConverterWindow},

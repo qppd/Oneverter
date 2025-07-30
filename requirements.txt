@@ -14,8 +14,8 @@ reportlab>=4.2.0
 docx2pdf>=0.1.8
 
 # Video Processing (for future implementation)
-# opencv-python>=4.8.0
-# moviepy>=1.0.3
+opencv-python>=4.8.0
+moviepy>=1.0.3
 
 # Audio Processing
 pydub>=0.25.1
@@ -24,10 +24,13 @@ SpeechRecognition>=3.10.4
 gTTS>=2.5.1
 pyttsx3>=2.90
 yt-dlp>=2024.4.9
+pysrt>=1.1.2
+yt_dlp
 vosk>=0.3.45
 pygame>=2.5.2
 PyAudio>=0.2.14
 mutagen>=1.47.0
+sounddevice>=0.4.6
 
 # Background Removal
 rembg>=2.0.0
@@ -39,3 +42,6 @@ onnxruntime>=1.16.3
 
 # Archive Handling (for future implementation)
 # py7zr>=0.20.0 
+
+# Screen Recording
+pyautogui>=0.9.54 

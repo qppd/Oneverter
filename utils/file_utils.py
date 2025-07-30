@@ -2,6 +2,7 @@ import os
 import shutil
 from typing import List, Tuple
 from pathlib import Path
+from moviepy.editor import VideoFileClip
 
 
 def get_file_size(file_path: str) -> str:
@@ -128,4 +129,20 @@ def get_file_info(file_path: str) -> dict:
         }
     except Exception as e:
         print(f"Error getting file info: {e}")
+        return {} 
+
+
+def get_media_info(file_path: str) -> dict:
+    """Get media file information using moviepy"""
+    try:
+        clip = VideoFileClip(file_path)
+        info = {
+            'duration': clip.duration,
+            'resolution': f"{clip.w}x{clip.h}",
+            'fps': clip.fps,
+        }
+        clip.close()
+        return info
+    except Exception as e:
+        print(f"Error getting media info: {e}")
         return {} 
