@@ -17,11 +17,21 @@ docx2pdf>=0.1.8
 # opencv-python>=4.8.0
 # moviepy>=1.0.3
 
-# Audio Processing (for future implementation)
-# pydub>=0.25.1
+# Audio Processing
+pydub>=0.25.1
+librosa>=0.10.1
+SpeechRecognition>=3.10.4
+gTTS>=2.5.1
+pyttsx3>=2.90
+yt-dlp>=2024.4.9
+vosk>=0.3.45
+pygame>=2.5.2
+PyAudio>=0.2.14
+mutagen>=1.47.0
 
-# Background Removal (for future implementation)
+# Background Removal
 rembg>=2.0.0
+onnxruntime>=1.16.3
 
 # Data Processing (for future implementation)
 # pandas>=2.0.0

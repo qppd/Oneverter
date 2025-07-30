@@ -3,7 +3,10 @@ from PIL import Image
 from customtkinter import CTkImage
 from ui.base_window import BaseMainApp
 from ui.converter_window import ConverterWindow
+from ui.audio_converter_window import AudioConverterWindow
+from utils.system_utils import is_ffmpeg_installed
 import os
+from tkinter import messagebox
 
 
 class Main(BaseMainApp):
@@ -19,6 +22,9 @@ class Main(BaseMainApp):
 
         ctk.set_appearance_mode("System")
         ctk.set_default_color_theme("blue")
+
+        if not is_ffmpeg_installed():
+            messagebox.showwarning("ffmpeg Not Found", "ffmpeg is not installed or not in your system's PATH. Some audio and video conversion features may not work correctly.")
 
         self.setup_ui()
 
@@ -84,10 +90,19 @@ class Main(BaseMainApp):
             command=self.start_conversion
         ).grid(row=3, column=0, pady=20)
         
+        # Theme toggle
+        theme_switch = ctk.CTkSwitch(overlay, text="Toggle Theme", command=self.toggle_theme)
+        theme_switch.grid(row=4, column=0, pady=10, sticky="n")
+
         # Footer
         ctk.CTkLabel(
             overlay, text="© 2025 QPPD • Oneverter", font=ctk.CTkFont(size=12)
         ).grid(row=4, column=0, pady=10, sticky="s")
+
+    def toggle_theme(self):
+        current_mode = ctk.get_appearance_mode()
+        new_mode = "Dark" if current_mode == "Light" else "Light"
+        ctk.set_appearance_mode(new_mode)
 
     def start_conversion(self):
         print("Launching conversion UI...")
