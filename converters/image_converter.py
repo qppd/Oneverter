@@ -2,7 +2,10 @@ import customtkinter as ctk
 from .base_converter import BaseConverter
 from tkinter import filedialog, Listbox, Scrollbar, SINGLE, MULTIPLE, END, messagebox
 import os
-from PIL import Image
+from PIL import Image, ImageEnhance
+from .base_converter import BaseConverter
+import customtkinter as ctk
+from rembg import remove
 
 class ImageConverter(BaseConverter):
     def get_supported_formats(self):
@@ -11,6 +14,17 @@ class ImageConverter(BaseConverter):
     def convert(self, input_path, output_path, options):
         try:
             img = Image.open(input_path)
+
+            if options.get("remove_bg"):
+                img = remove(img)
+
+            if options.get("brightness") != 1.0:
+                enhancer = ImageEnhance.Brightness(img)
+                img = enhancer.enhance(options["brightness"])
+            
+            if options.get("contrast") != 1.0:
+                enhancer = ImageEnhance.Contrast(img)
+                img = enhancer.enhance(options["contrast"])
 
             if options.get("resize"):
                 img = img.resize(options["resize"])
@@ -26,7 +40,11 @@ class ImageConverter(BaseConverter):
             if options.get("rotate", 0) != 0:
                 img = img.rotate(options["rotate"], expand=True)
 
-            img.save(output_path, format=options["format"])
+            save_options = {"format": options["format"]}
+            if options["format"].lower() in ["jpeg", "jpg", "webp"]:
+                save_options["quality"] = options.get("compression", 95)
+            
+            img.save(output_path, **save_options)
             return True
         except Exception as e:
             messagebox.showerror("Error", f"Failed to convert {input_path}:\n{e}")
@@ -86,6 +104,33 @@ class ImageConverterUI:
         rotate_menu = ctk.CTkOptionMenu(options_frame, variable=self.rotate_var, values=["0", "90", "180", "270"])
         rotate_menu.pack(side="left")
 
+        # Editing options
+        edit_frame = ctk.CTkFrame(self.parent)
+        edit_frame.pack(padx=10, pady=10, fill="x")
+
+        self.remove_bg_var = ctk.BooleanVar()
+        remove_bg_check = ctk.CTkCheckBox(edit_frame, text="Remove Background", variable=self.remove_bg_var)
+        remove_bg_check.pack(side="left")
+
+        compression_label = ctk.CTkLabel(edit_frame, text="Compression (JPG/WEBP):")
+        compression_label.pack(side="left", padx=(20, 10))
+        self.compression_var = ctk.IntVar(value=95)
+        compression_slider = ctk.CTkSlider(edit_frame, from_=0, to=100, variable=self.compression_var)
+        compression_slider.pack(side="left")
+
+        brightness_label = ctk.CTkLabel(edit_frame, text="Brightness:")
+        brightness_label.pack(side="left", padx=(20, 10))
+        self.brightness_var = ctk.DoubleVar(value=1.0)
+        brightness_slider = ctk.CTkSlider(edit_frame, from_=0.5, to=1.5, variable=self.brightness_var)
+        brightness_slider.pack(side="left")
+
+        contrast_label = ctk.CTkLabel(edit_frame, text="Contrast:")
+        contrast_label.pack(side="left", padx=(20, 10))
+        self.contrast_var = ctk.DoubleVar(value=1.0)
+        contrast_slider = ctk.CTkSlider(edit_frame, from_=0.5, to=1.5, variable=self.contrast_var)
+        contrast_slider.pack(side="left")
+
+
         output_frame = ctk.CTkFrame(self.parent)
         output_frame.pack(padx=10, pady=10, fill="x")
 
@@ -136,7 +181,11 @@ class ImageConverterUI:
                 "resize": (int(self.width_var.get()), int(self.height_var.get())) if self.width_var.get() and self.height_var.get() else None,
                 "grayscale": self.grayscale_var.get(),
                 "flip": self.flip_var.get(),
-                "rotate": int(self.rotate_var.get())
+                "rotate": int(self.rotate_var.get()),
+                "remove_bg": self.remove_bg_var.get(),
+                "compression": self.compression_var.get(),
+                "brightness": self.brightness_var.get(),
+                "contrast": self.contrast_var.get()
             }
 
             if self.converter.convert(filepath, new_filepath, options):

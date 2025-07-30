@@ -21,7 +21,7 @@ docx2pdf>=0.1.8
 # pydub>=0.25.1
 
 # Background Removal (for future implementation)
-# rembg>=2.0.0
+rembg>=2.0.0
 
 # Data Processing (for future implementation)
 # pandas>=2.0.0
