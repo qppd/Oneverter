@@ -15,57 +15,167 @@ from converters.screen_recorder import ScreenRecorderUI
 from converters.metadata_editor import MetadataEditorUI
 
 class VideoToolsWindow(BaseWindow):
-    """Main window for all video tools."""
+    """Main window for all video tools with advanced editing capabilities."""
 
     def __init__(self, parent):
-        super().__init__(parent, title="Oneverter - Video Tools", geometry="1280x720")
+        super().__init__(parent, title="Oneverter - Video Studio", geometry="1280x720")
         self.resizable(True, True)
-        self.minsize(900, 700)
+        self.minsize(1024, 768)  # Larger minimum size for better UI experience
         self.setup_ui()
 
     def setup_ui(self):
-        """Setup the main UI with a responsive grid layout."""
+        """Setup the main UI with a modern tabbed interface."""
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
-        # Header
+        # Header with modern styling
         header_frame = ctk.CTkFrame(self)
         header_frame.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 
-        # Back button
+        # Back button with updated style
         back_button = ctk.CTkButton(
-            header_frame, text="← Back to Converters", command=self.on_close, width=150
+            header_frame, 
+            text="← Back to Converters", 
+            command=self.on_close, 
+            width=150,
+            fg_color=("#2B2B2B", "#3E3E3E"),  # Darker theme
+            hover_color=("#363636", "#4A4A4A")
         )
         back_button.pack(side="left")
 
-        # Title
+        # Modern title with icon
         title_label = ctk.CTkLabel(
-            header_frame, text="🛠️ Video Tools", font=ctk.CTkFont(size=24, weight="bold")
+            header_frame, 
+            text="🎬 Oneverter Studio", 
+            font=ctk.CTkFont(size=24, weight="bold")
         )
         title_label.pack(side="left", padx=20)
 
-        # Scrollable content area for tool cards
-        self.scrollable_frame = ctk.CTkScrollableFrame(self)
-        self.scrollable_frame.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
+        # Main content area with tabs
+        self.tab_view = ctk.CTkTabview(self)
+        self.tab_view.grid(row=1, column=0, padx=20, pady=(0, 20), sticky="nsew")
         
-        self.create_tool_cards()
+        # Create main tabs
+        self.quick_tools_tab = self.tab_view.add("Quick Tools")
+        self.video_editor_tab = self.tab_view.add("Video Editor")
+        self.screen_recorder_tab = self.tab_view.add("Screen Recorder")
+        self.youtube_tools_tab = self.tab_view.add("YouTube Tools")
+
+        # Setup content for each tab
+        self.setup_quick_tools_tab()
+        self.setup_video_editor_tab()
+        self.setup_screen_recorder_tab()
+        self.setup_youtube_tools_tab()
+
+    def setup_quick_tools_tab(self):
+        """Setup the Quick Tools tab with common video operations."""
+        tools_frame = ctk.CTkFrame(self.quick_tools_tab)
+        tools_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # Create a grid of quick tools
+        tools = [
+            ("✂️ Trim Video", self.open_trimmer),
+            ("🔄 Convert Format", self.open_converter),
+            ("📏 Resize Video", self.open_resizer),
+            ("🔀 Merge Videos", self.open_merger),
+            ("🖼️ Extract Frames", self.open_frame_extractor),
+            ("⚡ Change Speed", self.open_speed_changer),
+            ("💧 Add Watermark", self.open_watermarker),
+            ("🎯 GIF Converter", self.open_gif_converter)
+        ]
+
+        for i, (tool_name, command) in enumerate(tools):
+            row, col = divmod(i, 4)
+            tool_frame = ctk.CTkFrame(tools_frame)
+            tool_frame.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+            
+            button = ctk.CTkButton(
+                tool_frame,
+                text=tool_name,
+                command=command,
+                width=200,
+                height=100,
+                font=ctk.CTkFont(size=16)
+            )
+            button.pack(padx=10, pady=10)
+
+        # Configure grid
+        for i in range(2):  # Rows
+            tools_frame.grid_rowconfigure(i, weight=1)
+        for i in range(4):  # Columns
+            tools_frame.grid_columnconfigure(i, weight=1)
+
+    def setup_video_editor_tab(self):
+        """Setup the video editor tab with CapCut-style interface."""
+        from .components.capcut_style_editor import CapcutStyleEditor
+
+        # Create the CapCut-style editor
+        self.video_editor = CapcutStyleEditor(self.video_editor_tab)
+        self.video_editor.pack(fill="both", expand=True)
+
+    def setup_screen_recorder_tab(self):
+        """Setup the Screen Recorder tab with professional OBS-style features."""
+        from .components.screen_recorder_components import ScreenRecorderPanel
+        
+        # Create the enhanced screen recorder panel
+        self.screen_recorder = ScreenRecorderPanel(self.screen_recorder_tab)
+        self.screen_recorder.pack(fill="both", expand=True, padx=10, pady=10)
+
+    def setup_youtube_tools_tab(self):
+        """Setup the YouTube Tools tab with download and upload features."""
+        youtube_frame = ctk.CTkFrame(self.youtube_tools_tab)
+        youtube_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        # URL input
+        url_frame = ctk.CTkFrame(youtube_frame)
+        url_frame.pack(fill="x", padx=10, pady=10)
+        
+        ctk.CTkLabel(url_frame, text="YouTube URL:").pack(side="left", padx=5)
+        url_entry = ctk.CTkEntry(url_frame, placeholder_text="Enter YouTube URL", width=400)
+        url_entry.pack(side="left", padx=5, fill="x", expand=True)
+
+        # Download options
+        options_frame = ctk.CTkFrame(youtube_frame)
+        options_frame.pack(fill="x", padx=10, pady=10)
+        
+        ctk.CTkLabel(options_frame, text="Quality:").pack(side="left", padx=5)
+        quality_menu = ctk.CTkOptionMenu(options_frame, values=["Best", "1080p", "720p", "480p", "360p"])
+        quality_menu.pack(side="left", padx=5)
+        
+        ctk.CTkLabel(options_frame, text="Format:").pack(side="left", padx=5)
+        format_menu = ctk.CTkOptionMenu(options_frame, values=["MP4", "Audio Only (MP3)"])
+        format_menu.pack(side="left", padx=5)
+
+        # Action buttons
+        action_frame = ctk.CTkFrame(youtube_frame)
+        action_frame.pack(fill="x", padx=10, pady=10)
+        
+        ctk.CTkButton(action_frame, text="Download", width=150).pack(side="left", padx=5)
+        ctk.CTkButton(action_frame, text="Advanced Options", width=150).pack(side="left", padx=5)
+
+        # Download queue
+        queue_frame = ctk.CTkFrame(youtube_frame)
+        queue_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        ctk.CTkLabel(queue_frame, text="Download Queue:").pack(anchor="w", padx=5, pady=5)
+        
+        # ...existing code...
 
     def create_tool_cards(self):
         """Create cards for each video tool."""
         tools = [
-            {"icon": "🎥", "title": "Video Converter", "desc": "Convert formats, change resolution, codec, FPS", "command": self.open_video_converter},
-            {"icon": "✂️", "title": "Trim & Cut", "desc": "Cut out parts of a video", "command": self.open_video_trimmer},
-            {"icon": "🔗", "title": "Merge Videos", "desc": "Combine multiple videos into one", "command": self.open_video_merger},
-            {"icon": "🎶", "title": "Add/Remove Audio", "desc": "Mute, replace, or add audio tracks", "command": self.open_audio_editor},
-            {"icon": "🖼️", "title": "Resize / Crop", "desc": "Change video dimensions or crop area", "command": self.open_video_resizer},
-            {"icon": "✍️", "title": "Add Text/Watermark", "desc": "Overlay text or a logo", "command": self.open_video_watermarker},
-            {"icon": "🔄", "title": "Convert to GIF", "desc": "Create animated GIFs from videos", "command": self.open_gif_converter},
-            {"icon": "🎞️", "title": "Extract Frames", "desc": "Save video frames as images", "command": self.open_frame_extractor},
+            {"icon": "🎥", "title": "Video Converter", "desc": "Convert video formats, resolution, codec, FPS", "command": self.open_video_converter},
+            {"icon": "✂️", "title": "Trim & Cut", "desc": "Remove unwanted parts", "command": self.open_video_trimmer},
+            {"icon": "🔗", "title": "Merge Videos", "desc": "Combine multiple videos", "command": self.open_video_merger},
+            {"icon": "🎶", "title": "Audio Editor", "desc": "Mute, replace, or add audio", "command": self.open_audio_editor},
+            {"icon": "🖼️", "title": "Resize / Crop", "desc": "Change dimensions or crop area", "command": self.open_video_resizer},
+            {"icon": "✍️", "title": "Watermark/Text", "desc": "Overlay text or logo", "command": self.open_video_watermarker},
+            {"icon": "🔄", "title": "GIF Converter", "desc": "Create GIFs from videos", "command": self.open_gif_converter},
+            {"icon": "🎞️", "title": "Frame Extractor", "desc": "Save frames as images", "command": self.open_frame_extractor},
             {"icon": "🔤", "title": "Subtitle Tool", "desc": "Add or burn-in subtitles", "command": self.open_subtitle_tool},
-            {"icon": "⏩", "title": "Playback Speed", "desc": "Change video playback speed", "command": self.open_speed_changer},
-            {"icon": "📥", "title": "YouTube Downloader", "desc": "Download videos from YouTube", "command": self.open_youtube_downloader},
-            {"icon": "⏺️", "title": "Screen Recorder", "desc": "Record your screen with audio", "command": self.open_screen_recorder},
-            {"icon": "📝", "title": "Metadata Editor", "desc": "Edit video title, author, etc.", "command": self.open_metadata_editor},
+            {"icon": "⏩", "title": "Speed Changer", "desc": "Adjust playback speed", "command": self.open_speed_changer},
+            {"icon": "📥", "title": "YouTube Downloader", "desc": "Download YouTube videos", "command": self.open_youtube_downloader},
+            {"icon": "📝", "title": "Metadata Editor", "desc": "Edit video metadata", "command": self.open_metadata_editor},
         ]
 
         # Make the grid responsive

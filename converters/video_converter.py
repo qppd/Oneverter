@@ -4,6 +4,7 @@ import os
 from threading import Thread
 from moviepy.editor import VideoFileClip
 from .base_converter import BaseConverter
+from .base_converter_ui import BaseConverterUI
 from utils.file_utils import get_media_info
 
 class VideoConverter(BaseConverter):
@@ -39,36 +40,62 @@ class VideoConverter(BaseConverter):
         except Exception as e:
             return f"Error converting {os.path.basename(input_path)}: {e}"
 
-class VideoConverterUI:
-    def __init__(self, parent):
-        self.parent = parent
-        self.files = []
+class VideoConverterUI(BaseConverterUI):
+    def __init__(self, parent_frame: ctk.CTkFrame):
+        """Initialize the video converter UI."""
         self.converter = VideoConverter()
-        
-        self.setup_ui()
+        super().__init__(parent_frame)
 
-    def setup_ui(self):
-        self.parent.grid_rowconfigure(1, weight=1)
-        self.parent.grid_columnconfigure(0, weight=1)
+    def has_tabs(self) -> bool:
+        """Video Tools uses tabs."""
+        return True
+
+    def setup_tabs(self):
+        """Setup the video tools tabs."""
+        # Main conversion tools
+        self.converter_tab = self.tab_view.add("Video Converter")
+        self.trimmer_tab = self.tab_view.add("Trim & Cut")
+        self.merger_tab = self.tab_view.add("Merge Videos")
         
+        # Enhancement tools
+        self.resizer_tab = self.tab_view.add("Resize / Crop")
+        self.watermark_tab = self.tab_view.add("Watermark")
+        self.subtitle_tab = self.tab_view.add("Subtitles")
+        
+        # Special features
+        self.gif_tab = self.tab_view.add("Convert to GIF")
+        self.frame_tab = self.tab_view.add("Extract Frames")
+        self.speed_tab = self.tab_view.add("Playback Speed")
+        self.youtube_tab = self.tab_view.add("YouTube Download")
+        self.screen_tab = self.tab_view.add("Screen Recorder")
+        self.metadata_tab = self.tab_view.add("Metadata")
+
+    def build_ui(self):
+        """Build the UI using pack geometry manager consistently."""
         # --- Main Frame ---
         main_frame = ctk.CTkFrame(self.parent, fg_color="transparent")
-        main_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
-        main_frame.grid_columnconfigure(0, weight=1)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         # --- File Selection ---
         file_frame = ctk.CTkFrame(main_frame)
-        file_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
-        file_frame.grid_columnconfigure(1, weight=1)
-
-        ctk.CTkButton(file_frame, text="Add Files", command=self.add_files).grid(row=0, column=0, padx=10, pady=10)
-        self.file_list_label = ctk.CTkLabel(file_frame, text="No files selected", anchor="w")
-        self.file_list_label.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
-        ctk.CTkButton(file_frame, text="Clear", command=self.clear_files).grid(row=0, column=2, padx=10, pady=10)
+        file_frame.pack(fill="x", pady=(0, 10))
+        
+        # File selection buttons and label in horizontal layout
+        button_frame = ctk.CTkFrame(file_frame, fg_color="transparent")
+        button_frame.pack(fill="x", padx=10, pady=10)
+        
+        add_button = ctk.CTkButton(button_frame, text="Add Files", command=self.add_files)
+        add_button.pack(side="left", padx=(0, 10))
+        
+        self.file_list_label = ctk.CTkLabel(button_frame, text="No files selected", anchor="w")
+        self.file_list_label.pack(side="left", fill="x", expand=True)
+        
+        clear_button = ctk.CTkButton(button_frame, text="Clear", command=self.clear_files)
+        clear_button.pack(side="right", padx=(10, 0))
 
         # --- Settings Tabs ---
         self.tab_view = ctk.CTkTabview(main_frame)
-        self.tab_view.grid(row=1, column=0, sticky="nsew", pady=10)
+        self.tab_view.pack(fill="both", expand=True, pady=10)
         self.tab_view.add("Video")
         self.tab_view.add("Audio")
         
@@ -77,50 +104,74 @@ class VideoConverterUI:
         
         # --- Conversion ---
         conversion_frame = ctk.CTkFrame(main_frame)
-        conversion_frame.grid(row=2, column=0, sticky="ew", pady=(10, 0))
-        conversion_frame.grid_columnconfigure(0, weight=1)
+        conversion_frame.pack(fill="x", pady=(10, 0))
 
-        self.progress_bar = ctk.CTkProgressBar(conversion_frame)
-        self.progress_bar.set(0)
-        self.progress_bar.grid(row=0, column=0, sticky="ew", padx=10, pady=10)
+        # Progress and convert button in horizontal layout
+        progress_frame = ctk.CTkFrame(conversion_frame, fg_color="transparent")
+        progress_frame.pack(fill="x", padx=10, pady=10)
         
-        ctk.CTkButton(conversion_frame, text="Convert", command=self.start_conversion_thread).grid(row=0, column=1, padx=10, pady=10)
+        self.progress_bar = ctk.CTkProgressBar(progress_frame)
+        self.progress_bar.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        self.progress_bar.set(0)
+        
+        convert_button = ctk.CTkButton(progress_frame, text="Convert", command=self.start_conversion_thread)
+        convert_button.pack(side="right")
 
+        # Status label
         self.status_label = ctk.CTkLabel(main_frame, text="", anchor="w")
-        self.status_label.grid(row=3, column=0, sticky="ew", padx=10, pady=10)
+        self.status_label.pack(fill="x", padx=10, pady=10)
 
     def create_video_settings(self, tab):
-        tab.grid_columnconfigure(1, weight=1)
-
+        """Create video settings using pack geometry manager."""
         # Output Format
-        ctk.CTkLabel(tab, text="Output Format:").grid(row=0, column=0, padx=10, pady=10, sticky="w")
-        self.output_format = ctk.CTkOptionMenu(tab, values=["mp4", "avi", "webm", "gif"])
-        self.output_format.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+        format_frame = ctk.CTkFrame(tab, fg_color="transparent")
+        format_frame.pack(fill="x", padx=10, pady=5)
+        ctk.CTkLabel(format_frame, text="Output Format:").pack(side="left")
+        self.output_format = ctk.CTkOptionMenu(format_frame, values=["mp4", "avi", "webm", "gif"])
+        self.output_format.pack(side="left", padx=(10, 0), fill="x", expand=True)
 
         # Resolution
-        ctk.CTkLabel(tab, text="Resolution:").grid(row=1, column=0, padx=10, pady=10, sticky="w")
-        self.resolution = ctk.CTkOptionMenu(tab, values=["Original", "1080p", "720p", "480p"])
-        self.resolution.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        resolution_frame = ctk.CTkFrame(tab, fg_color="transparent")
+        resolution_frame.pack(fill="x", padx=10, pady=5)
+        ctk.CTkLabel(resolution_frame, text="Resolution:").pack(side="left")
+        self.resolution = ctk.CTkOptionMenu(resolution_frame, values=["Original", "1080p", "720p", "480p"])
+        self.resolution.pack(side="left", padx=(10, 0), fill="x", expand=True)
 
         # FPS
-        ctk.CTkLabel(tab, text="FPS:").grid(row=2, column=0, padx=10, pady=10, sticky="w")
-        self.fps = ctk.CTkOptionMenu(tab, values=["Original", "15", "30", "60"])
-        self.fps.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+        fps_frame = ctk.CTkFrame(tab, fg_color="transparent")
+        fps_frame.pack(fill="x", padx=10, pady=5)
+        ctk.CTkLabel(fps_frame, text="FPS:").pack(side="left")
+        self.fps = ctk.CTkOptionMenu(fps_frame, values=["Original", "15", "30", "60"])
+        self.fps.pack(side="left", padx=(10, 0), fill="x", expand=True)
 
         # Codec
-        ctk.CTkLabel(tab, text="Codec:").grid(row=3, column=0, padx=10, pady=10, sticky="w")
-        self.codec = ctk.CTkOptionMenu(tab, values=["h264", "libvpx-vp9", "mpeg4"])
-        self.codec.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+        codec_frame = ctk.CTkFrame(tab, fg_color="transparent")
+        codec_frame.pack(fill="x", padx=10, pady=5)
+        ctk.CTkLabel(codec_frame, text="Codec:").pack(side="left")
+        self.codec = ctk.CTkOptionMenu(codec_frame, values=["h264", "libvpx-vp9", "mpeg4"])
+        self.codec.pack(side="left", padx=(10, 0), fill="x", expand=True)
 
     def create_audio_settings(self, tab):
-        tab.grid_columnconfigure(1, weight=1)
+        """Create audio settings using pack geometry manager."""
+        # Extract Audio Checkbox
         self.extract_audio_var = ctk.BooleanVar()
-        ctk.CTkCheckBox(tab, text="Extract Audio Only", variable=self.extract_audio_var, command=self.toggle_audio_extract).grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="w")
+        checkbox = ctk.CTkCheckBox(
+            tab, 
+            text="Extract Audio Only", 
+            variable=self.extract_audio_var, 
+            command=self.toggle_audio_extract
+        )
+        checkbox.pack(fill="x", padx=10, pady=10)
 
-        self.audio_format_label = ctk.CTkLabel(tab, text="Audio Format:")
-        self.audio_format_label.grid(row=1, column=0, padx=10, pady=10, sticky="w")
-        self.audio_format = ctk.CTkOptionMenu(tab, values=["mp3", "wav"])
-        self.audio_format.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        # Audio Format
+        format_frame = ctk.CTkFrame(tab, fg_color="transparent")
+        format_frame.pack(fill="x", padx=10, pady=5)
+        
+        self.audio_format_label = ctk.CTkLabel(format_frame, text="Audio Format:")
+        self.audio_format_label.pack(side="left")
+        
+        self.audio_format = ctk.CTkOptionMenu(format_frame, values=["mp3", "wav"])
+        self.audio_format.pack(side="left", padx=(10, 0), fill="x", expand=True)
         self.toggle_audio_extract()
 
     def toggle_audio_extract(self):

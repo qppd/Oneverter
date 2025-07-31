@@ -1,0 +1,47 @@
+import customtkinter as ctk
+from ..components.capcut_style_editor import CapcutStyleEditor
+
+class VideoToolsPanel(ctk.CTkFrame):
+    """Modern video editing panel with CapCut-style interface."""
+    
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setup_ui()
+        
+    def setup_ui(self):
+        """Setup the modern video editing interface."""
+        # Configure the frame
+        self.configure(fg_color="transparent")
+        
+        # Clean header with icon and description
+        header_frame = ctk.CTkFrame(self, fg_color="transparent")
+        header_frame.pack(fill="x", padx=20, pady=(20, 10))
+        
+        # Title with icon
+        title_label = ctk.CTkLabel(
+            header_frame,
+            text="🎬 Video Studio",
+            font=ctk.CTkFont(size=24, weight="bold")
+        )
+        title_label.pack(side="left")
+        
+        # Description
+        desc_label = ctk.CTkLabel(
+            header_frame,
+            text="Professional video editing and conversion",
+            font=ctk.CTkFont(size=14),
+            text_color="gray"
+        )
+        desc_label.pack(side="left", padx=20)
+        
+        # Main editor
+        self.editor = CapcutStyleEditor(self)
+        self.editor.pack(fill="both", expand=True, padx=20, pady=20)
+        
+    def refresh(self):
+        """Refresh the panel state."""
+        pass  # No refresh needed for this panel
+        
+    def show_tool_interface(self, tool_name: str, tool_ui_class):
+        """Override to prevent the default tool interface behavior."""
+        pass  # We don't want to show individual tools anymore

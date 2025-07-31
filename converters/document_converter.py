@@ -412,7 +412,8 @@ class DocumentConverterUI:
                 subprocess.run(["xdg-open", output_dir], check=True)
         except Exception as e:
             print(f"Error opening output folder: {e}")
-            messagebox.showwarning("Warning", f"Could not open the output folder automatically.\nPath: {output_dir}")
+            if self.unified_main_window:
+                self.unified_main_window.show_notification(f"Could not open the output folder automatically. Path: {output_dir}", type_="warning")
 
     def get_conversion_options(self) -> Dict[str, Any]:
         """Get conversion options from UI"""

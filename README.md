@@ -6,47 +6,51 @@ Oneverter is a modern, user-friendly desktop application built with Python and C
 
 ## ✨ Features
 
-### 📄 Document Converters
-- **PDF to DOCX** - Convert PDF files to editable Word documents
-- **DOCX to PDF** - Convert Word documents to PDF format
-- **PDF to TXT** - Extract text from PDF files
-- **DOCX to TXT** - Convert Word docs to plain text
-- **TXT to PDF** - Convert text files to PDF
 
-### 🖼️ Image Converters (Coming Soon)
-- Image format conversion (JPG ↔ PNG ↔ WEBP ↔ GIF)
-- Image resizing and compression
-- Background removal using AI
-- Batch image processing
+
+### 📄 Document Converter
+- **PDF to DOCX** – Convert PDF files to editable Word documents
+- **DOCX to PDF** – Convert Word documents to PDF format
+- **PDF to TXT** – Extract text from PDF files
+- **DOCX to TXT** – Convert Word docs to plain text
+- **TXT to PDF** – Convert text files to PDF
+
+### 🖼️ Image Converter
+- Image format conversion (JPG, PNG, WEBP, BMP, TIFF)
+- Resize, compress, grayscale, flip, rotate images
+- Remove background (AI)
+- Adjust brightness and contrast
+
+### 🎵 Audio Converter
+- Audio format conversion (MP3, WAV, OGG, M4A, FLAC)
+- Trim, adjust volume, set bitrate
+- YouTube audio/video downloader
+- Text-to-Speech (TTS) and Speech-to-Text (STT)
+- Voice recorder and metadata editor
 
 ### 🎥 Video Tools
 A comprehensive suite of tools for all your video editing needs:
-- **Video Converter:** Convert between MP4, AVI, WebM, and GIF, with options for resolution, FPS, and codec.
-- **Trim & Cut:** Easily trim or cut sections of your videos.
-- **Merge Videos:** Combine multiple video clips into a single file, with an optional fade transition.
-- **Add/Remove Audio:** Mute, replace, or add a new audio track to your videos.
-- **Resize & Crop:** Change video dimensions or crop to a specific area.
-- **Text & Watermark:** Overlay custom text or a logo onto your videos with position and opacity controls.
-- **Convert to GIF:** Create animated GIFs from your video clips with options for duration and looping.
-- **Extract Frames:** Save video frames as a sequence of images (PNG/JPG).
-- **Subtitle Tool:** Burn subtitles from an SRT file directly into your video.
-- **Playback Speed:** Change the playback speed of your videos (e.g., 0.5x, 1.5x, 2x).
-- **YouTube Downloader:** Download videos from YouTube in various formats and resolutions.
-- **Screen Recorder:** Record your screen, with an option to include audio from your microphone.
+- **Video Converter:** Convert between MP4, AVI, WebM, and GIF, with options for resolution, FPS, and codec
+- **Trim & Cut:** Easily trim or cut sections of your videos
+- **Merge Videos:** Combine multiple video clips into a single file, with an optional fade transition
+- **Add/Remove Audio:** Mute, replace, or add a new audio track to your videos
+- **Resize & Crop:** Change video dimensions or crop to a specific area
+- **Text & Watermark:** Overlay custom text or a logo onto your videos with position and opacity controls
+- **Convert to GIF:** Create animated GIFs from your video clips with options for duration and looping
+- **Extract Frames:** Save video frames as a sequence of images (PNG/JPG)
+- **Subtitle Tool:** Burn subtitles from an SRT file directly into your video
+- **Playback Speed:** Change the playback speed of your videos (e.g., 0.5x, 1.5x, 2x)
+- **YouTube Downloader:** Download videos from YouTube in various formats and resolutions
+- **Screen Recorder:** Record your screen, with an option to include audio from your microphone
 
-### 🎵 Audio Converters (Coming Soon)
-- Audio format conversion (MP3 ↔ WAV ↔ FLAC ↔ AAC)
-- Audio extraction from video files
-- Audio compression
+### 📦 Archive Converter *(UI Placeholder)*
+- Planned: Archive format conversion (ZIP, 7Z, TAR)
+- Planned: Archive extraction and creation
 
-### 📦 Archive Converters (Coming Soon)
-- Archive format conversion (ZIP ↔ RAR ↔ 7Z)
-- Archive extraction and creation
-
-### 📊 Data Converters (Coming Soon)
-- CSV ↔ Excel conversion
-- JSON ↔ XML conversion
-- Data format transformation
+### 📊 Data Converter *(UI Placeholder)*
+- Planned: CSV ↔ Excel conversion
+- Planned: JSON ↔ XML conversion
+- Planned: Data format transformation
 
 ## 🛠️ Installation
 
@@ -58,47 +62,53 @@ A comprehensive suite of tools for all your video editing needs:
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd Oneverter
-```
+## Features
 
-2. Create a virtual environment (recommended):
-```bash
-python -m venv .venv
-```
+- Modular converter architecture (audio, video, image, document, etc.)
+- Secure Firebase Authentication (email/password, OAuth, password reset, auto-login)
+- Multi-Factor Authentication (MFA) via email verification
+- User profile management (edit display name, upload avatar)
+- Encrypted token storage (Fernet)
+- CustomTkinter UI
+- Roadmap and migration steps
 
-3. Activate the virtual environment:
-```bash
-# Windows
-.venv\Scripts\activate
+## Migration Roadmap
 
-# macOS/Linux
-source .venv/bin/activate
-```
+1. Scan and document full codebase
+2. Plan and implement Firebase Authentication integration
+3. Refactor authentication logic to modular provider
+4. Implement secure token storage (encrypted file)
+5. Add MFA and user profile management
+6. Update documentation for all changes
 
-4. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## Security Practices
 
-## 🚀 Usage
+- All tokens are encrypted before storage
+- Passwords are never stored in plaintext
+- Firebase config is kept secure
+- MFA (email verification) required for login
 
-1.  Make sure your virtual environment is activated.
+## Testing Procedures
 
-2.  Run the application directly:
-```bash
-python main.py
-```
+- Unit tests for authentication, token storage, and profile management
+- Integration tests for error handling (invalid login, expired token, network error)
+- Run all tests:
+  ```bash
+  python -m unittest discover tests
+  ```
 
-*Alternatively, you can use the auto-start script which attempts to activate the environment and run the app for you:*
-```bash
-python auto_start.py
-```
+## Reminders
 
-3. Click "🚀 Start Conversion" on the main screen.
+- Always update README.md after major changes
+- Test authentication flows after each update
+
+## Next Steps
+
+- Further modularization, additional error handling, security review
 
 4. Choose your converter category.
 
-5. For the Document Converter, select your files, choose options, and start converting! Other converters are placeholders for now.
+5. For Document, Audio, and Image Converters, select your files, choose options, and start converting! Archive and Data converters currently display UI placeholders and are planned for future releases.
 
 ## 📁 Project Structure
 
@@ -215,6 +225,26 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - CustomTkinter team for the amazing GUI framework
 - All open-source libraries used in this project
 - Contributors and users of Oneverter
+
+
+## 🚦 Migration & Roadmap
+
+
+
+### Firebase Authentication Migration
+
+- [x] Plan migration steps and improvements
+- [x] Set up Firebase project and enable Authentication
+- [x] Refactor authentication code to use Firebase (`FirebaseAuthProvider` added)
+- [x] Update UI to use Firebase authentication (login/signup now use Firebase)
+- [x] Test all authentication flows (login, signup, password reset, auto-login)
+- [x] Secure token storage using encrypted file (`TokenStore`)
+- [x] Implement auto-login using refresh token
+- [x] Modularize authentication logic
+- [x] Document new setup, environment variables, and troubleshooting
+- [ ] Add advanced features (MFA, user profile management)
+
+**Reminder:** Laging i-update ang README.md para sa mga natapos, mga plano, at iba pang mahahalagang pagbabago sa project.
 
 ## 📞 Support
 
