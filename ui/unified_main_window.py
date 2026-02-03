@@ -283,12 +283,8 @@ class UnifiedMainWindow(ctk.CTkFrame):
         
     def update_breadcrumbs(self):
         """Update the breadcrumb display."""
-        breadcrumb_text = self.navigation_manager.get_breadcrumb_text()
-        self.breadcrumb_label.configure(text=breadcrumb_text)
-        
-        # Enable/disable back button
-        can_go_back = len(self.navigation_manager.history) > 0
-        self.back_button.configure(state="normal" if can_go_back else "disabled")
+        # Header removed, no breadcrumbs to update
+        pass
         
     def clear_content(self):
         """Clear the current content area."""
@@ -363,28 +359,28 @@ class UnifiedMainWindow(ctk.CTkFrame):
     def create_category_card(self, parent, row, col, icon, title, description, command):
         """Create a single category card."""
         card = ctk.CTkFrame(parent, **get_frame_style())
-        card.grid(row=row, column=col, padx=10, pady=10, sticky="nsew")
+        card.grid(row=row, column=col, padx=5, pady=5, sticky="nsew")
         card.grid_rowconfigure(3, weight=1)
         card.grid_columnconfigure(0, weight=1)
         
         # Icon
-        icon_label = ctk.CTkLabel(card, text=icon, font=ctk.CTkFont(size=48))
-        icon_label.grid(row=0, column=0, pady=(20, 10))
+        icon_label = ctk.CTkLabel(card, text=icon, font=ctk.CTkFont(size=32))
+        icon_label.grid(row=0, column=0, pady=(10, 5))
         
         # Title
-        title_label = ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=18, weight="bold"))
-        title_label.grid(row=1, column=0, pady=5)
+        title_label = ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=14, weight="bold"))
+        title_label.grid(row=1, column=0, pady=2)
         
         # Description
         desc_label = ctk.CTkLabel(
-            card, text=description, font=ctk.CTkFont(size=12),
-            text_color=Colors.SUBTLE_TEXT, wraplength=200
+            card, text=description, font=ctk.CTkFont(size=10),
+            text_color=Colors.SUBTLE_TEXT, wraplength=150
         )
-        desc_label.grid(row=2, column=0, padx=10, pady=5)
+        desc_label.grid(row=2, column=0, padx=5, pady=2)
         
         # Button
-        button = ctk.CTkButton(card, text="Open Converter", command=command, **get_button_style())
-        button.grid(row=3, column=0, padx=20, pady=20, sticky="s")
+        button = ctk.CTkButton(card, text="Open", command=command, **get_button_style("small"))
+        button.grid(row=3, column=0, padx=10, pady=10, sticky="s")
         
         # Make card clickable
         for widget in [card, icon_label, title_label, desc_label]:
