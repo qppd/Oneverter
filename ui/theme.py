@@ -24,16 +24,16 @@ class Colors:
     WARNING = "#FF9800"           # Orange warning
     ACCENT = "#FF5722"            # Accent color
 
-# Font Styles (Modern Typography)
+# Font Styles (Modern Typography - Compact)
 class Fonts:
-    TITLE = ("Inter", 28, "bold")      # App title
-    SUBTITLE = ("Inter", 18)           # Section subtitles
-    HEADING = ("Inter", 22, "bold")    # Panel headings
-    SUBHEADING = ("Inter", 16, "bold") # Sub headings
-    BODY = ("Inter", 14)               # Body text
-    BUTTON = ("Inter", 14, "bold")     # Button text
-    SMALL = ("Inter", 12)              # Small text/captions
-    CAPTION = ("Inter", 11)            # Captions
+    TITLE = ("Inter", 20, "bold")      # App title - reduced
+    SUBTITLE = ("Inter", 14)           # Section subtitles - reduced
+    HEADING = ("Inter", 16, "bold")    # Panel headings - reduced
+    SUBHEADING = ("Inter", 12, "bold") # Sub headings - reduced
+    BODY = ("Inter", 11)               # Body text - reduced
+    BUTTON = ("Inter", 11, "bold")     # Button text - reduced
+    SMALL = ("Inter", 10)              # Small text/captions - reduced
+    CAPTION = ("Inter", 9)             # Captions - reduced
 
 # Global Widget Styling
 def apply_theme():
@@ -58,12 +58,12 @@ def get_button_style(variant="default", size="default"):
     }
     
     if size == "large":
-        base_style["height"] = 48
+        base_style["height"] = 36  # Reduced from 48
     elif size == "small":
-        base_style["height"] = 32
+        base_style["height"] = 28  # Reduced from 32
         base_style["font"] = Fonts.SMALL
     else:
-        base_style["height"] = 40
+        base_style["height"] = 32  # Reduced from 40
     
     if variant == "danger":
         base_style.update({

@@ -61,7 +61,7 @@ class CategorySidebar(ctk.CTkFrame):
     """Collapsible sidebar with category navigation."""
     
     def __init__(self, parent, navigation_manager: NavigationManager):
-        super().__init__(parent, **get_frame_style())
+        super().__init__(parent, **get_frame_style(), width=180)  # Fixed width for consistency
         self.navigation_manager = navigation_manager
         self.is_collapsed = False
         self.setup_ui()
@@ -157,7 +157,7 @@ class UnifiedMainWindow(ctk.CTkFrame):
         # Make the window resizable
         if isinstance(master, ctk.CTk):
             master.resizable(True, True)
-            master.minsize(1200, 800)
+            master.minsize(1000, 700)  # Minimum size for responsive design
             master.title("Oneverter - Unified Interface")
 
         # Initialize navigation
@@ -182,19 +182,16 @@ class UnifiedMainWindow(ctk.CTkFrame):
     def setup_ui(self):
         """Setup the unified interface layout."""
         # Configure main grid
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        
-        # Header
-        self.create_header()
         
         # Sidebar
         self.sidebar = CategorySidebar(self, self.navigation_manager)
-        self.sidebar.grid(row=1, column=0, sticky="nsew", padx=(10, 5), pady=(0, 10))
+        self.sidebar.grid(row=0, column=0, sticky="nsew", padx=(10, 5), pady=(10, 10))
         
         # Main content area
         self.content_frame = ctk.CTkFrame(self, **get_frame_style())
-        self.content_frame.grid(row=1, column=1, sticky="nsew", padx=(5, 10), pady=(0, 10))
+        self.content_frame.grid(row=0, column=1, sticky="nsew", padx=(5, 10), pady=(10, 10))
         self.content_frame.grid_rowconfigure(0, weight=1)
         self.content_frame.grid_columnconfigure(0, weight=1)
         

@@ -15,7 +15,9 @@ class App:
         
         # Configure window
         self.root.title("Oneverter - File Converter")
-        self.root.geometry("1200x800")
+        # Make window maximized for full screen usage with responsive content
+        self.root.state("zoomed")  # Maximized window
+        self.root.minsize(1000, 700)  # Minimum size for responsiveness
         
         # Show main app directly
         self.show_main_app()
