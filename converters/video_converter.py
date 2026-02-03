@@ -74,28 +74,28 @@ class VideoConverterUI(BaseConverterUI):
         """Build the UI using pack geometry manager consistently."""
         # --- Main Frame ---
         main_frame = ctk.CTkFrame(self.parent, fg_color="transparent")
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        main_frame.pack(fill="both", expand=True, padx=5, pady=5)
         
         # --- File Selection ---
         file_frame = ctk.CTkFrame(main_frame)
-        file_frame.pack(fill="x", pady=(0, 10))
+        file_frame.pack(fill="x", pady=(0, 5))
         
         # File selection buttons and label in horizontal layout
         button_frame = ctk.CTkFrame(file_frame, fg_color="transparent")
-        button_frame.pack(fill="x", padx=10, pady=10)
+        button_frame.pack(fill="x", padx=5, pady=5)
         
         add_button = ctk.CTkButton(button_frame, text="Add Files", command=self.add_files)
-        add_button.pack(side="left", padx=(0, 10))
+        add_button.pack(side="left", padx=(0, 5))
         
         self.file_list_label = ctk.CTkLabel(button_frame, text="No files selected", anchor="w")
         self.file_list_label.pack(side="left", fill="x", expand=True)
         
         clear_button = ctk.CTkButton(button_frame, text="Clear", command=self.clear_files)
-        clear_button.pack(side="right", padx=(10, 0))
+        clear_button.pack(side="right", padx=(5, 0))
 
         # --- Settings Tabs ---
         self.tab_view = ctk.CTkTabview(main_frame)
-        self.tab_view.pack(fill="both", expand=True, pady=10)
+        self.tab_view.pack(fill="both", expand=True, pady=5)
         self.tab_view.add("Video")
         self.tab_view.add("Audio")
         
@@ -104,14 +104,14 @@ class VideoConverterUI(BaseConverterUI):
         
         # --- Conversion ---
         conversion_frame = ctk.CTkFrame(main_frame)
-        conversion_frame.pack(fill="x", pady=(10, 0))
+        conversion_frame.pack(fill="x", pady=(5, 0))
 
         # Progress and convert button in horizontal layout
         progress_frame = ctk.CTkFrame(conversion_frame, fg_color="transparent")
-        progress_frame.pack(fill="x", padx=10, pady=10)
+        progress_frame.pack(fill="x", padx=5, pady=5)
         
         self.progress_bar = ctk.CTkProgressBar(progress_frame)
-        self.progress_bar.pack(side="left", fill="x", expand=True, padx=(0, 10))
+        self.progress_bar.pack(side="left", fill="x", expand=True, padx=(0, 5))
         self.progress_bar.set(0)
         
         convert_button = ctk.CTkButton(progress_frame, text="Convert", command=self.start_conversion_thread)
@@ -119,37 +119,37 @@ class VideoConverterUI(BaseConverterUI):
 
         # Status label
         self.status_label = ctk.CTkLabel(main_frame, text="", anchor="w")
-        self.status_label.pack(fill="x", padx=10, pady=10)
+        self.status_label.pack(fill="x", padx=5, pady=5)
 
     def create_video_settings(self, tab):
         """Create video settings using pack geometry manager."""
         # Output Format
         format_frame = ctk.CTkFrame(tab, fg_color="transparent")
-        format_frame.pack(fill="x", padx=10, pady=5)
+        format_frame.pack(fill="x", padx=5, pady=5)
         ctk.CTkLabel(format_frame, text="Output Format:").pack(side="left")
         self.output_format = ctk.CTkOptionMenu(format_frame, values=["mp4", "avi", "webm", "gif"])
-        self.output_format.pack(side="left", padx=(10, 0), fill="x", expand=True)
+        self.output_format.pack(side="left", padx=(5, 0), fill="x", expand=True)
 
         # Resolution
         resolution_frame = ctk.CTkFrame(tab, fg_color="transparent")
-        resolution_frame.pack(fill="x", padx=10, pady=5)
+        resolution_frame.pack(fill="x", padx=5, pady=5)
         ctk.CTkLabel(resolution_frame, text="Resolution:").pack(side="left")
         self.resolution = ctk.CTkOptionMenu(resolution_frame, values=["Original", "1080p", "720p", "480p"])
-        self.resolution.pack(side="left", padx=(10, 0), fill="x", expand=True)
+        self.resolution.pack(side="left", padx=(5, 0), fill="x", expand=True)
 
         # FPS
         fps_frame = ctk.CTkFrame(tab, fg_color="transparent")
-        fps_frame.pack(fill="x", padx=10, pady=5)
+        fps_frame.pack(fill="x", padx=5, pady=5)
         ctk.CTkLabel(fps_frame, text="FPS:").pack(side="left")
         self.fps = ctk.CTkOptionMenu(fps_frame, values=["Original", "15", "30", "60"])
-        self.fps.pack(side="left", padx=(10, 0), fill="x", expand=True)
+        self.fps.pack(side="left", padx=(5, 0), fill="x", expand=True)
 
         # Codec
         codec_frame = ctk.CTkFrame(tab, fg_color="transparent")
-        codec_frame.pack(fill="x", padx=10, pady=5)
+        codec_frame.pack(fill="x", padx=5, pady=5)
         ctk.CTkLabel(codec_frame, text="Codec:").pack(side="left")
         self.codec = ctk.CTkOptionMenu(codec_frame, values=["h264", "libvpx-vp9", "mpeg4"])
-        self.codec.pack(side="left", padx=(10, 0), fill="x", expand=True)
+        self.codec.pack(side="left", padx=(5, 0), fill="x", expand=True)
 
     def create_audio_settings(self, tab):
         """Create audio settings using pack geometry manager."""
@@ -161,17 +161,17 @@ class VideoConverterUI(BaseConverterUI):
             variable=self.extract_audio_var, 
             command=self.toggle_audio_extract
         )
-        checkbox.pack(fill="x", padx=10, pady=10)
+        checkbox.pack(fill="x", padx=5, pady=5)
 
         # Audio Format
         format_frame = ctk.CTkFrame(tab, fg_color="transparent")
-        format_frame.pack(fill="x", padx=10, pady=5)
+        format_frame.pack(fill="x", padx=5, pady=5)
         
         self.audio_format_label = ctk.CTkLabel(format_frame, text="Audio Format:")
         self.audio_format_label.pack(side="left")
         
         self.audio_format = ctk.CTkOptionMenu(format_frame, values=["mp3", "wav"])
-        self.audio_format.pack(side="left", padx=(10, 0), fill="x", expand=True)
+        self.audio_format.pack(side="left", padx=(5, 0), fill="x", expand=True)
         self.toggle_audio_extract()
 
     def toggle_audio_extract(self):
