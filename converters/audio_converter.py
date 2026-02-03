@@ -77,15 +77,15 @@ class AudioConverterUI(BaseConverterUI):
     def setup_downloader_tab(self):
         """Setup the YouTube downloader tab."""
         content_frame = ctk.CTkFrame(self.downloader_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # URL entry
         url_frame = ctk.CTkFrame(content_frame)
-        url_frame.grid(row=0, column=0, sticky="ew", pady=(0, 20))
+        url_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         url_frame.grid_columnconfigure(1, weight=1)
 
         url_label = ctk.CTkLabel(url_frame, text="YouTube URL:")
-        url_label.grid(row=0, column=0, padx=(0, 10))
+        url_label.grid(row=0, column=0, padx=(0, 5))
 
         self.url_var = ctk.StringVar()
         url_entry = ctk.CTkEntry(url_frame, textvariable=self.url_var, placeholder_text="Enter YouTube URL")
@@ -93,19 +93,19 @@ class AudioConverterUI(BaseConverterUI):
 
         # Download options
         download_options_frame = ctk.CTkFrame(content_frame)
-        download_options_frame.grid(row=1, column=0, sticky="ew", pady=(0, 20))
+        download_options_frame.grid(row=1, column=0, sticky="ew", pady=(0, 10))
 
         self.download_type_var = ctk.StringVar(value="audio")
         audio_radio = ctk.CTkRadioButton(download_options_frame, text="Audio only (MP3)", 
                                        variable=self.download_type_var, value="audio")
-        audio_radio.grid(row=0, column=0, padx=(0, 20))
+        audio_radio.grid(row=0, column=0, padx=(0, 10))
         video_radio = ctk.CTkRadioButton(download_options_frame, text="Video (MP4)", 
                                        variable=self.download_type_var, value="video")
         video_radio.grid(row=0, column=1)
 
         # Action button
         self.download_button = ctk.CTkButton(content_frame, text="Download", command=self.download_youtube_video)
-        self.download_button.grid(row=2, column=0, pady=(0, 10))
+        self.download_button.grid(row=2, column=0, pady=(0, 5))
 
         # Progress bar
         self.download_progress = ctk.CTkProgressBar(content_frame)
@@ -115,35 +115,35 @@ class AudioConverterUI(BaseConverterUI):
     def setup_tts_tab(self):
         """Setup the Text-to-Speech tab."""
         content_frame = ctk.CTkFrame(self.tts_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # Text input
         text_label = ctk.CTkLabel(content_frame, text="Enter Text:")
         text_label.grid(row=0, column=0, sticky="w")
-        self.tts_text = ctk.CTkTextbox(content_frame, height=150)
-        self.tts_text.grid(row=1, column=0, sticky="ew", pady=(0, 20))
+        self.tts_text = ctk.CTkTextbox(content_frame, height=100)
+        self.tts_text.grid(row=1, column=0, sticky="ew", pady=(0, 10))
 
         # Voice selection
         voice_frame = ctk.CTkFrame(content_frame)
-        voice_frame.grid(row=2, column=0, sticky="ew", pady=(0, 20))
+        voice_frame.grid(row=2, column=0, sticky="ew", pady=(0, 10))
         voice_frame.grid_columnconfigure(1, weight=1)
         
         voice_label = ctk.CTkLabel(voice_frame, text="Voice:")
-        voice_label.grid(row=0, column=0, padx=(0, 10))
+        voice_label.grid(row=0, column=0, padx=(0, 5))
         self.tts_voice_var = ctk.StringVar()
         voice_menu = ctk.CTkOptionMenu(voice_frame, variable=self.tts_voice_var, 
                                      values=["Default Voice"])
-        voice_menu.grid(row=0, column=1, padx=(0, 20))
+        voice_menu.grid(row=0, column=1, padx=(0, 10))
 
         # Action buttons
         action_frame = ctk.CTkFrame(content_frame)
         action_frame.grid(row=3, column=0, sticky="ew")
         
         self.tts_button = ctk.CTkButton(action_frame, text="Convert to Speech", command=self.convert_to_speech)
-        self.tts_button.grid(row=0, column=0, padx=(0, 10))
+        self.tts_button.grid(row=0, column=0, padx=(0, 5))
         
         self.play_button = ctk.CTkButton(action_frame, text="Play", command=self.play_speech, state="disabled")
-        self.play_button.grid(row=0, column=1, padx=(0, 10))
+        self.play_button.grid(row=0, column=1, padx=(0, 5))
         
         self.save_button = ctk.CTkButton(action_frame, text="Save As...", command=self.save_speech, state="disabled")
         self.save_button.grid(row=0, column=2)
@@ -151,25 +151,25 @@ class AudioConverterUI(BaseConverterUI):
     def setup_stt_tab(self):
         """Setup the Speech-to-Text tab."""
         content_frame = ctk.CTkFrame(self.stt_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         content_frame.grid_rowconfigure(1, weight=1)
 
         # File selection
         file_frame = ctk.CTkFrame(content_frame)
-        file_frame.grid(row=0, column=0, sticky="ew", pady=(0, 20))
+        file_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         file_frame.grid_columnconfigure(0, weight=1)
         
         self.stt_filepath_var = ctk.StringVar()
         file_entry = ctk.CTkEntry(file_frame, textvariable=self.stt_filepath_var, 
                                 placeholder_text="Select an audio file", state="disabled")
-        file_entry.grid(row=0, column=0, sticky="ew", padx=(0, 10))
+        file_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
         
         select_button = ctk.CTkButton(file_frame, text="Browse", command=self.select_stt_file)
         select_button.grid(row=0, column=1)
 
         # Transcription output
-        self.stt_output = ctk.CTkTextbox(content_frame, height=200)
-        self.stt_output.grid(row=1, column=0, sticky="nsew", pady=(0, 20))
+        self.stt_output = ctk.CTkTextbox(content_frame, height=150)
+        self.stt_output.grid(row=1, column=0, sticky="nsew", pady=(0, 10))
 
         # Action buttons
         action_frame = ctk.CTkFrame(content_frame)
@@ -177,7 +177,7 @@ class AudioConverterUI(BaseConverterUI):
         
         self.stt_start_button = ctk.CTkButton(action_frame, text="Start Transcription", 
                                              command=self.start_transcription, state="disabled")
-        self.stt_start_button.grid(row=0, column=0, padx=(0, 10))
+        self.stt_start_button.grid(row=0, column=0, padx=(0, 5))
         
         self.stt_save_button = ctk.CTkButton(action_frame, text="Save As...", 
                                             command=self.save_transcription, state="disabled")
@@ -186,57 +186,57 @@ class AudioConverterUI(BaseConverterUI):
     def setup_recorder_tab(self):
         """Setup the Voice Recorder tab."""
         content_frame = ctk.CTkFrame(self.recorder_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # Recording controls
         self.record_button = ctk.CTkButton(content_frame, text="Start Recording", command=self.start_recording)
-        self.record_button.grid(row=0, column=0, pady=10)
+        self.record_button.grid(row=0, column=0, pady=5)
         
         self.stop_button = ctk.CTkButton(content_frame, text="Stop Recording", 
                                         command=self.stop_recording, state="disabled")
-        self.stop_button.grid(row=1, column=0, pady=10)
+        self.stop_button.grid(row=1, column=0, pady=5)
         
         # Recording status
         self.recording_status_var = ctk.StringVar(value="Status: Idle")
         status_label = ctk.CTkLabel(content_frame, textvariable=self.recording_status_var)
-        status_label.grid(row=2, column=0, pady=10)
+        status_label.grid(row=2, column=0, pady=5)
 
         # Post-recording actions
         self.post_rec_frame = ctk.CTkFrame(content_frame, fg_color="transparent")
-        self.post_rec_frame.grid(row=3, column=0, pady=10)
+        self.post_rec_frame.grid(row=3, column=0, pady=5)
         
         self.save_rec_button = ctk.CTkButton(self.post_rec_frame, text="Save Recording", 
                                             command=self.save_recording, state="disabled")
-        self.save_rec_button.grid(row=0, column=0, padx=10)
+        self.save_rec_button.grid(row=0, column=0, padx=5)
         
         self.transcribe_rec_button = ctk.CTkButton(self.post_rec_frame, text="Transcribe", 
                                                   command=self.transcribe_recording, state="disabled")
-        self.transcribe_rec_button.grid(row=0, column=1, padx=10)
+        self.transcribe_rec_button.grid(row=0, column=1, padx=5)
 
     def setup_tools_tab(self):
         """Setup the Audio Tools tab."""
         content_frame = ctk.CTkFrame(self.tools_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # Audio effects section
         effects_frame = ctk.CTkFrame(content_frame)
-        effects_frame.grid(row=0, column=0, sticky="ew", pady=(0, 20))
+        effects_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         
         effects_label = ctk.CTkLabel(effects_frame, text="Audio Effects")
-        effects_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
+        effects_label.grid(row=0, column=0, sticky="w", padx=5, pady=5)
 
         # Effect options
         self.reverb_var = ctk.BooleanVar()
         reverb_cb = ctk.CTkCheckBox(effects_frame, text="Reverb", variable=self.reverb_var)
-        reverb_cb.grid(row=1, column=0, sticky="w", padx=10, pady=5)
+        reverb_cb.grid(row=1, column=0, sticky="w", padx=5, pady=2)
         
         self.bass_boost_var = ctk.BooleanVar()
         bass_cb = ctk.CTkCheckBox(effects_frame, text="Bass Boost", variable=self.bass_boost_var)
-        bass_cb.grid(row=2, column=0, sticky="w", padx=10, pady=5)
+        bass_cb.grid(row=2, column=0, sticky="w", padx=5, pady=2)
         
         # Speed control
         speed_frame = ctk.CTkFrame(effects_frame)
-        speed_frame.grid(row=3, column=0, sticky="ew", padx=10, pady=5)
+        speed_frame.grid(row=3, column=0, sticky="ew", padx=5, pady=2)
         speed_frame.grid_columnconfigure(1, weight=1)
         
         speed_label = ctk.CTkLabel(speed_frame, text="Speed:")
@@ -244,59 +244,59 @@ class AudioConverterUI(BaseConverterUI):
         
         self.speed_var = ctk.DoubleVar(value=1.0)
         speed_slider = ctk.CTkSlider(speed_frame, from_=0.5, to=2.0, variable=self.speed_var)
-        speed_slider.grid(row=0, column=1, sticky="ew", padx=10)
+        speed_slider.grid(row=0, column=1, sticky="ew", padx=5)
 
     def setup_metadata_tab(self):
         """Setup the Metadata Editor tab."""
         content_frame = ctk.CTkFrame(self.metadata_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # File selection
         file_frame = ctk.CTkFrame(content_frame)
-        file_frame.grid(row=0, column=0, sticky="ew", pady=(0, 20))
+        file_frame.grid(row=0, column=0, sticky="ew", pady=(0, 10))
         file_frame.grid_columnconfigure(0, weight=1)
         
         self.metadata_filepath_var = ctk.StringVar()
         file_entry = ctk.CTkEntry(file_frame, textvariable=self.metadata_filepath_var, 
                                  placeholder_text="Select an audio file", state="disabled")
-        file_entry.grid(row=0, column=0, sticky="ew", padx=(0, 10))
+        file_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
         
         select_button = ctk.CTkButton(file_frame, text="Browse", command=self.select_metadata_file)
         select_button.grid(row=0, column=1)
 
         # Metadata fields
         fields_frame = ctk.CTkFrame(content_frame)
-        fields_frame.grid(row=1, column=0, sticky="ew", pady=(0, 20))
+        fields_frame.grid(row=1, column=0, sticky="ew", pady=(0, 10))
         
         # Title
         title_label = ctk.CTkLabel(fields_frame, text="Title:")
-        title_label.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        title_label.grid(row=0, column=0, sticky="w", padx=5, pady=2)
         self.title_var = ctk.StringVar()
         title_entry = ctk.CTkEntry(fields_frame, textvariable=self.title_var)
-        title_entry.grid(row=1, column=0, sticky="ew", padx=10, pady=(0, 10))
+        title_entry.grid(row=1, column=0, sticky="ew", padx=5, pady=(0, 5))
         
         # Artist
         artist_label = ctk.CTkLabel(fields_frame, text="Artist:")
-        artist_label.grid(row=2, column=0, sticky="w", padx=10, pady=5)
+        artist_label.grid(row=2, column=0, sticky="w", padx=5, pady=2)
         self.artist_var = ctk.StringVar()
         artist_entry = ctk.CTkEntry(fields_frame, textvariable=self.artist_var)
-        artist_entry.grid(row=3, column=0, sticky="ew", padx=10, pady=(0, 10))
+        artist_entry.grid(row=3, column=0, sticky="ew", padx=5, pady=(0, 5))
         
         # Album
         album_label = ctk.CTkLabel(fields_frame, text="Album:")
-        album_label.grid(row=4, column=0, sticky="w", padx=10, pady=5)
+        album_label.grid(row=4, column=0, sticky="w", padx=5, pady=2)
         self.album_var = ctk.StringVar()
         album_entry = ctk.CTkEntry(fields_frame, textvariable=self.album_var)
-        album_entry.grid(row=5, column=0, sticky="ew", padx=10, pady=(0, 10))
+        album_entry.grid(row=5, column=0, sticky="ew", padx=5, pady=(0, 5))
 
         # Save button
         save_button = ctk.CTkButton(content_frame, text="Save Metadata", command=self.save_metadata)
-        save_button.grid(row=2, column=0, pady=10)
+        save_button.grid(row=2, column=0, pady=5)
 
     def setup_converter_tab(self):
         """Setup the main converter tab."""
         content_frame = ctk.CTkFrame(self.converter_tab, fg_color="transparent")
-        content_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        content_frame.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         
         self.create_file_selection_area(content_frame)
         self.create_conversion_options(content_frame)
@@ -306,63 +306,63 @@ class AudioConverterUI(BaseConverterUI):
     def create_file_selection_area(self, parent):
         """Create the file selection area."""
         file_frame = ctk.CTkFrame(parent)
-        file_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        file_frame.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         file_frame.grid_columnconfigure(1, weight=1)
 
         select_button = ctk.CTkButton(file_frame, text="Select Audio Files", command=self.browse_files)
-        select_button.grid(row=0, column=0, padx=5, pady=5)
+        select_button.grid(row=0, column=0, padx=2, pady=2)
 
         self.file_listbox = Listbox(file_frame, selectmode=MULTIPLE, bg="#2b2b2b", fg="white", 
                                   borderwidth=0, highlightthickness=0)
-        self.file_listbox.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+        self.file_listbox.grid(row=0, column=1, padx=2, pady=2, sticky="nsew")
 
         scrollbar = Scrollbar(file_frame, orient="vertical", command=self.file_listbox.yview)
         scrollbar.grid(row=0, column=2, sticky="ns")
         self.file_listbox.config(yscrollcommand=scrollbar.set)
 
         clear_button = ctk.CTkButton(file_frame, text="Clear", command=self.clear_files)
-        clear_button.grid(row=0, column=3, padx=5, pady=5)
+        clear_button.grid(row=0, column=3, padx=2, pady=2)
 
     def create_conversion_options(self, parent):
         """Create the conversion options area."""
         options_frame = ctk.CTkFrame(parent)
-        options_frame.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        options_frame.grid(row=1, column=0, padx=5, pady=5, sticky="ew")
 
         # Format selection
         format_label = ctk.CTkLabel(options_frame, text="Convert to:")
-        format_label.grid(row=0, column=0, padx=(0, 5))
+        format_label.grid(row=0, column=0, padx=(0, 2))
         self.format_var = ctk.StringVar(value="mp3")
         format_menu = ctk.CTkOptionMenu(options_frame, variable=self.format_var,
                                       values=["mp3", "wav", "ogg", "m4a", "flac"])
-        format_menu.grid(row=0, column=1, padx=5)
+        format_menu.grid(row=0, column=1, padx=2)
 
         # Bitrate selection
         bitrate_label = ctk.CTkLabel(options_frame, text="Bitrate:")
-        bitrate_label.grid(row=0, column=2, padx=(20, 5))
+        bitrate_label.grid(row=0, column=2, padx=(10, 2))
         self.bitrate_var = ctk.StringVar(value="192k")
         bitrate_menu = ctk.CTkOptionMenu(options_frame, variable=self.bitrate_var,
                                        values=["128k", "192k", "256k", "320k"])
-        bitrate_menu.grid(row=0, column=3, padx=5)
+        bitrate_menu.grid(row=0, column=3, padx=2)
 
         # Volume adjustment
         volume_label = ctk.CTkLabel(options_frame, text="Volume:")
-        volume_label.grid(row=0, column=4, padx=(20, 5))
+        volume_label.grid(row=0, column=4, padx=(10, 2))
         self.volume_var = ctk.DoubleVar(value=0)
         volume_slider = ctk.CTkSlider(options_frame, from_=-10, to=10,
                                     variable=self.volume_var)
-        volume_slider.grid(row=0, column=5, padx=5)
+        volume_slider.grid(row=0, column=5, padx=2)
         volume_value = ctk.CTkLabel(options_frame, textvariable=self.volume_var)
-        volume_value.grid(row=0, column=6, padx=5)
+        volume_value.grid(row=0, column=6, padx=2)
 
     def create_output_options(self, parent):
         """Create the output options area."""
         output_frame = ctk.CTkFrame(parent)
-        output_frame.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
+        output_frame.grid(row=2, column=0, padx=5, pady=5, sticky="ew")
         output_frame.grid_columnconfigure(1, weight=1)
 
         output_button = ctk.CTkButton(output_frame, text="Output Folder",
                                     command=self.browse_output)
-        output_button.grid(row=0, column=0, padx=(0, 10))
+        output_button.grid(row=0, column=0, padx=(0, 5))
 
         self.output_label = ctk.CTkLabel(output_frame, text="No output folder selected")
         self.output_label.grid(row=0, column=1, sticky="ew")
@@ -370,12 +370,12 @@ class AudioConverterUI(BaseConverterUI):
     def create_action_area(self, parent):
         """Create the action area with conversion button and progress bar."""
         action_frame = ctk.CTkFrame(parent)
-        action_frame.grid(row=3, column=0, padx=10, pady=10, sticky="ew")
+        action_frame.grid(row=3, column=0, padx=5, pady=5, sticky="ew")
         action_frame.grid_columnconfigure(1, weight=1)
 
         self.convert_button = ctk.CTkButton(action_frame, text="Start Conversion",
                                           command=self.start_conversion)
-        self.convert_button.grid(row=0, column=0, padx=(0, 10))
+        self.convert_button.grid(row=0, column=0, padx=(0, 5))
 
         self.progress_bar = ctk.CTkProgressBar(action_frame)
         self.progress_bar.grid(row=0, column=1, sticky="ew")

@@ -28,7 +28,7 @@ class BaseConverterUI(ABC):
         # Create tab view if needed
         if self.has_tabs():
             self.tab_view = ctk.CTkTabview(self.parent)
-            self.tab_view.pack(expand=True, fill="both", padx=10, pady=10)
+            self.tab_view.pack(expand=True, fill="both", padx=5, pady=5)
             self.setup_tabs()
 
     def has_tabs(self) -> bool:
