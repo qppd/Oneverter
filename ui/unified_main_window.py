@@ -1,7 +1,6 @@
 import customtkinter as ctk
 from typing import Dict, Any, Optional, Callable
 from .theme import apply_theme, Colors, Fonts, get_button_style, get_frame_style
-from utils.secure_user_manager import SecureUserManager
 from .notifications import NotificationManager, ErrorDialog
 
 # Import panel registry for dynamic panel loading
@@ -69,9 +68,12 @@ class CategorySidebar(ctk.CTkFrame):
         
     def setup_ui(self):
         """Setup the sidebar UI."""
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        
         # Header with collapse button
         header_frame = ctk.CTkFrame(self, fg_color="transparent")
-        header_frame.pack(fill="x", padx=10, pady=(10, 5))
+        header_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
         
         self.collapse_button = ctk.CTkButton(
             header_frame, 
@@ -92,7 +94,7 @@ class CategorySidebar(ctk.CTkFrame):
         
         # Categories
         self.categories_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.categories_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        self.categories_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
         
         self.create_category_buttons()
         
@@ -108,7 +110,7 @@ class CategorySidebar(ctk.CTkFrame):
             {"icon": "📊", "name": "Data", "category": "Data"},
         ]
         
-        for category in categories:
+        for i, category in enumerate(categories):
             btn = ctk.CTkButton(
                 self.categories_frame,
                 text=f"{category['icon']} {category['name']}",
@@ -116,7 +118,7 @@ class CategorySidebar(ctk.CTkFrame):
                 anchor="w",
                 **get_button_style()
             )
-            btn.pack(fill="x", pady=2)
+            btn.grid(row=i, column=0, sticky="ew", pady=2)
             
     def navigate_to_category(self, category: str):
         """Navigate to a specific category."""
@@ -132,18 +134,18 @@ class CategorySidebar(ctk.CTkFrame):
         self.is_collapsed = not self.is_collapsed
         if self.is_collapsed:
             self.sidebar_title.pack_forget()
-            self.categories_frame.pack_forget()
+            self.categories_frame.grid_remove()
             self.collapse_button.configure(text="☰")
         else:
             self.sidebar_title.pack(side="left", padx=(10, 0))
-            self.categories_frame.pack(fill="both", expand=True, padx=10, pady=5)
+            self.categories_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
             self.collapse_button.configure(text="✕")
 
 
 class UnifiedMainWindow(ctk.CTkFrame):
     """Unified main window that contains all converter functionality."""
     
-    def __init__(self, master, user_manager: SecureUserManager, logout_callback: Callable):
+    def __init__(self, master, user_manager: Optional[Any] = None, logout_callback: Optional[Callable] = None):
         super().__init__(master)
         self.user_manager = user_manager
         self.logout_callback = logout_callback
@@ -229,8 +231,12 @@ class UnifiedMainWindow(ctk.CTkFrame):
         user_frame = ctk.CTkFrame(header_frame, fg_color="transparent")
         user_frame.pack(side="right", padx=10, pady=10)
 
-        user = self.user_manager.get_current_user()
-        welcome_text = f"Welcome, {user['name']}!" if user else "Welcome!"
+        # Only show user info if user_manager is available
+        if self.user_manager:
+            user = self.user_manager.get_current_user()
+            welcome_text = f"Welcome, {user['name']}!" if user else "Welcome!"
+        else:
+            welcome_text = "Oneverter"
 
         welcome_label = ctk.CTkLabel(
             user_frame, 
@@ -240,15 +246,17 @@ class UnifiedMainWindow(ctk.CTkFrame):
         )
         welcome_label.pack(side="left", padx=(0, 10))
 
-        logout_button = ctk.CTkButton(
-            user_frame, 
-            text="Logout", 
-            command=self.logout_callback,
-            width=80,
-            **get_button_style("danger")
-        )
-        logout_button.pack(side="right")
-        Tooltip(logout_button, "Log out and return to login screen")
+        # Only show logout button if logout_callback is available
+        if self.logout_callback:
+            logout_button = ctk.CTkButton(
+                user_frame, 
+                text="Logout", 
+                command=self.logout_callback,
+                width=80,
+                **get_button_style("danger")
+            )
+            logout_button.pack(side="right")
+            Tooltip(logout_button, "Log out and return to login screen")
         
     def create_footer(self):
         """Create the footer with status information."""

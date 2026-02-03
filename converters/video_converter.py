@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
 from threading import Thread
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 from .base_converter import BaseConverter
 from .base_converter_ui import BaseConverterUI
 from utils.file_utils import get_media_info

@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
 from threading import Thread
-from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, ImageClip
+from moviepy import VideoFileClip, TextClip, CompositeVideoClip, ImageClip
 from .base_converter import BaseConverter
 
 class VideoWatermarker(BaseConverter):

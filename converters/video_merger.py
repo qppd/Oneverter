@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox, dnd
 import os
 from threading import Thread
-from moviepy.editor import VideoFileClip, concatenate_videoclips, vfx
+from moviepy import VideoFileClip, concatenate_videoclips, vfx
 from .base_converter import BaseConverter
 import tkinter as tk
 

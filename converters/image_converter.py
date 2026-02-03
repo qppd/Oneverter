@@ -57,102 +57,132 @@ class ImageConverterUI:
         self.create_widgets()
 
     def create_widgets(self):
-        selection_frame = ctk.CTkFrame(self.parent)
-        selection_frame.pack(padx=10, pady=10, fill="x")
+        from ui.theme import get_frame_style, get_button_style, get_label_style
+        
+        selection_frame = ctk.CTkFrame(self.parent, **get_frame_style("card"))
+        selection_frame.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
+        selection_frame.grid_columnconfigure(1, weight=1)
 
-        select_button = ctk.CTkButton(selection_frame, text="Select Images", command=self.select_files)
-        select_button.pack(side="left", padx=(0, 10))
+        # Title
+        title_label = ctk.CTkLabel(selection_frame, text="📁 File Selection", **get_label_style("subheading"))
+        title_label.grid(row=0, column=0, columnspan=3, pady=(20, 15), padx=20, sticky="w")
 
-        self.file_listbox = Listbox(selection_frame, selectmode=MULTIPLE, bg="#2b2b2b", fg="white", borderwidth=0, highlightthickness=0)
-        self.file_listbox.pack(side="left", fill="both", expand=True)
+        select_button = ctk.CTkButton(selection_frame, text="Select Images", command=self.select_files, **get_button_style("secondary"))
+        select_button.grid(row=1, column=0, padx=20, pady=(0, 20))
+
+        self.file_listbox = Listbox(selection_frame, selectmode=MULTIPLE, bg="#2b2b2b", fg="white", borderwidth=0, highlightthickness=0, height=8)
+        self.file_listbox.grid(row=1, column=1, padx=(10, 10), pady=(0, 20), sticky="ew")
 
         scrollbar = Scrollbar(selection_frame, orient="vertical", command=self.file_listbox.yview)
-        scrollbar.pack(side="right", fill="y")
+        scrollbar.grid(row=1, column=2, sticky="ns", pady=(0, 20))
         self.file_listbox.config(yscrollcommand=scrollbar.set)
 
-        options_frame = ctk.CTkFrame(self.parent)
-        options_frame.pack(padx=10, pady=10, fill="x")
+        clear_button = ctk.CTkButton(selection_frame, text="Clear", command=self.clear_files, **get_button_style("danger", "small"))
+        clear_button.grid(row=1, column=3, padx=(10, 20), pady=(0, 20))
 
-        format_label = ctk.CTkLabel(options_frame, text="Convert to:")
-        format_label.pack(side="left", padx=(0, 10))
+        options_frame = ctk.CTkFrame(self.parent, **get_frame_style("card"))
+        options_frame.grid(row=1, column=0, sticky="ew", padx=20, pady=10)
+
+        # Title
+        options_title = ctk.CTkLabel(options_frame, text="⚙️ Conversion Options", **get_label_style("subheading"))
+        options_title.grid(row=0, column=0, columnspan=10, pady=(20, 15), padx=20, sticky="w")
+
+        format_label = ctk.CTkLabel(options_frame, text="Format:", **get_label_style("body"))
+        format_label.grid(row=1, column=0, padx=(20, 10), pady=10, sticky="w")
         self.format_var = ctk.StringVar(value="PNG")
-        format_menu = ctk.CTkOptionMenu(options_frame, variable=self.format_var, values=["PNG", "JPG", "BMP", "WEBP", "TIFF"])
-        format_menu.pack(side="left", padx=(0, 20))
+        format_menu = ctk.CTkOptionMenu(options_frame, variable=self.format_var, values=["PNG", "JPG", "BMP", "WEBP", "TIFF"], **get_button_style("secondary", "small"))
+        format_menu.grid(row=1, column=1, padx=10, pady=10)
 
-        resize_label = ctk.CTkLabel(options_frame, text="Resize (WxH):")
-        resize_label.pack(side="left", padx=(0, 10))
+        resize_label = ctk.CTkLabel(options_frame, text="Resize (WxH):", **get_label_style("body"))
+        resize_label.grid(row=1, column=2, padx=(20, 10), pady=10, sticky="w")
         self.width_var = ctk.StringVar()
         self.height_var = ctk.StringVar()
-        width_entry = ctk.CTkEntry(options_frame, textvariable=self.width_var, width=60)
-        width_entry.pack(side="left")
-        height_entry = ctk.CTkEntry(options_frame, textvariable=self.height_var, width=60)
-        height_entry.pack(side="left", padx=(5, 20))
+        width_entry = ctk.CTkEntry(options_frame, textvariable=self.width_var, width=80, placeholder_text="Width")
+        width_entry.grid(row=1, column=3, padx=5, pady=10)
+        height_entry = ctk.CTkEntry(options_frame, textvariable=self.height_var, width=80, placeholder_text="Height")
+        height_entry.grid(row=1, column=4, padx=5, pady=10)
 
         self.grayscale_var = ctk.BooleanVar()
-        grayscale_check = ctk.CTkCheckBox(options_frame, text="Grayscale", variable=self.grayscale_var)
-        grayscale_check.pack(side="left")
+        grayscale_check = ctk.CTkCheckBox(options_frame, text="Grayscale", variable=self.grayscale_var, **get_label_style("body"))
+        grayscale_check.grid(row=1, column=5, padx=20, pady=10, sticky="w")
 
         self.flip_var = ctk.StringVar(value="None")
-        flip_label = ctk.CTkLabel(options_frame, text="Flip:")
-        flip_label.pack(side="left", padx=(20, 10))
-        flip_menu = ctk.CTkOptionMenu(options_frame, variable=self.flip_var, values=["None", "Horizontal", "Vertical"])
-        flip_menu.pack(side="left")
+        flip_label = ctk.CTkLabel(options_frame, text="Flip:", **get_label_style("body"))
+        flip_label.grid(row=1, column=6, padx=(20, 10), pady=10, sticky="w")
+        flip_menu = ctk.CTkOptionMenu(options_frame, variable=self.flip_var, values=["None", "Horizontal", "Vertical"], **get_button_style("secondary", "small"))
+        flip_menu.grid(row=1, column=7, padx=10, pady=10)
 
         self.rotate_var = ctk.StringVar(value="0")
-        rotate_label = ctk.CTkLabel(options_frame, text="Rotate:")
-        rotate_label.pack(side="left", padx=(20, 10))
-        rotate_menu = ctk.CTkOptionMenu(options_frame, variable=self.rotate_var, values=["0", "90", "180", "270"])
-        rotate_menu.pack(side="left")
+        rotate_label = ctk.CTkLabel(options_frame, text="Rotate:", **get_label_style("body"))
+        rotate_label.grid(row=1, column=8, padx=(20, 10), pady=10, sticky="w")
+        rotate_menu = ctk.CTkOptionMenu(options_frame, variable=self.rotate_var, values=["0", "90", "180", "270"], **get_button_style("secondary", "small"))
+        rotate_menu.grid(row=1, column=9, padx=(10, 20), pady=10)
 
         # Editing options
-        edit_frame = ctk.CTkFrame(self.parent)
-        edit_frame.pack(padx=10, pady=10, fill="x")
+        edit_frame = ctk.CTkFrame(self.parent, **get_frame_style("card"))
+        edit_frame.grid(row=2, column=0, sticky="ew", padx=20, pady=10)
+
+        # Title
+        edit_title = ctk.CTkLabel(edit_frame, text="✨ Enhancements", **get_label_style("subheading"))
+        edit_title.grid(row=0, column=0, columnspan=7, pady=(20, 15), padx=20, sticky="w")
 
         self.remove_bg_var = ctk.BooleanVar()
-        remove_bg_check = ctk.CTkCheckBox(edit_frame, text="Remove Background", variable=self.remove_bg_var)
-        remove_bg_check.pack(side="left")
+        remove_bg_check = ctk.CTkCheckBox(edit_frame, text="Remove Background", variable=self.remove_bg_var, **get_label_style("body"))
+        remove_bg_check.grid(row=1, column=0, padx=20, pady=10, sticky="w")
 
-        compression_label = ctk.CTkLabel(edit_frame, text="Compression (JPG/WEBP):")
-        compression_label.pack(side="left", padx=(20, 10))
+        compression_label = ctk.CTkLabel(edit_frame, text="Compression:", **get_label_style("body"))
+        compression_label.grid(row=1, column=1, padx=(40, 10), pady=10, sticky="w")
         self.compression_var = ctk.IntVar(value=95)
         compression_slider = ctk.CTkSlider(edit_frame, from_=0, to=100, variable=self.compression_var)
-        compression_slider.pack(side="left")
+        compression_slider.grid(row=1, column=2, padx=10, pady=10, sticky="ew")
 
-        brightness_label = ctk.CTkLabel(edit_frame, text="Brightness:")
-        brightness_label.pack(side="left", padx=(20, 10))
+        brightness_label = ctk.CTkLabel(edit_frame, text="Brightness:", **get_label_style("body"))
+        brightness_label.grid(row=1, column=3, padx=(40, 10), pady=10, sticky="w")
         self.brightness_var = ctk.DoubleVar(value=1.0)
         brightness_slider = ctk.CTkSlider(edit_frame, from_=0.5, to=1.5, variable=self.brightness_var)
-        brightness_slider.pack(side="left")
+        brightness_slider.grid(row=1, column=4, padx=10, pady=10, sticky="ew")
 
-        contrast_label = ctk.CTkLabel(edit_frame, text="Contrast:")
-        contrast_label.pack(side="left", padx=(20, 10))
+        contrast_label = ctk.CTkLabel(edit_frame, text="Contrast:", **get_label_style("body"))
+        contrast_label.grid(row=1, column=5, padx=(40, 10), pady=10, sticky="w")
         self.contrast_var = ctk.DoubleVar(value=1.0)
         contrast_slider = ctk.CTkSlider(edit_frame, from_=0.5, to=1.5, variable=self.contrast_var)
-        contrast_slider.pack(side="left")
+        contrast_slider.grid(row=1, column=6, padx=10, pady=(10, 20), sticky="ew")
+
+        edit_frame.grid_columnconfigure((2, 4, 6), weight=1)
 
 
-        output_frame = ctk.CTkFrame(self.parent)
-        output_frame.pack(padx=10, pady=10, fill="x")
+        output_frame = ctk.CTkFrame(self.parent, **get_frame_style("card"))
+        output_frame.grid(row=3, column=0, sticky="ew", padx=20, pady=10)
+        output_frame.grid_columnconfigure(1, weight=1)
 
-        output_button = ctk.CTkButton(output_frame, text="Output Folder", command=self.select_output_folder)
-        output_button.pack(side="left", padx=(0, 10))
+        # Title
+        output_title = ctk.CTkLabel(output_frame, text="📂 Output Settings", **get_label_style("subheading"))
+        output_title.grid(row=0, column=0, columnspan=3, pady=(20, 15), padx=20, sticky="w")
+
+        output_button = ctk.CTkButton(output_frame, text="Select Folder", command=self.select_output_folder, **get_button_style("secondary"))
+        output_button.grid(row=1, column=0, padx=20, pady=(0, 20))
 
         self.output_folder_var = ctk.StringVar(value="Same folder")
-        output_label = ctk.CTkLabel(output_frame, textvariable=self.output_folder_var, fg_color="#2b2b2b", text_color="white", corner_radius=5)
-        output_label.pack(side="left", fill="x", expand=True)
+        output_label = ctk.CTkLabel(output_frame, textvariable=self.output_folder_var, fg_color="#2b2b2b", text_color="white", corner_radius=8, **get_label_style("caption"))
+        output_label.grid(row=1, column=1, padx=10, pady=(0, 20), sticky="ew")
 
         self.same_folder_var = ctk.BooleanVar(value=True)
-        same_folder_check = ctk.CTkCheckBox(output_frame, text="Save in same folder", variable=self.same_folder_var, command=self.toggle_output_folder)
-        same_folder_check.pack(side="left", padx=(10, 0))
+        same_folder_check = ctk.CTkCheckBox(output_frame, text="Save in same folder", variable=self.same_folder_var, command=self.toggle_output_folder, **get_label_style("body"))
+        same_folder_check.grid(row=1, column=2, padx=(10, 20), pady=(0, 20))
 
-        action_frame = ctk.CTkFrame(self.parent)
-        action_frame.pack(padx=10, pady=10, fill="x")
+        action_frame = ctk.CTkFrame(self.parent, **get_frame_style("card"))
+        action_frame.grid(row=4, column=0, sticky="ew", padx=20, pady=(10, 20))
+        action_frame.grid_columnconfigure(1, weight=1)
 
-        self.start_button = ctk.CTkButton(action_frame, text="Start Conversion", command=self.start_conversion)
-        self.start_button.pack(side="left", padx=(0, 10))
+        # Title
+        action_title = ctk.CTkLabel(action_frame, text="🚀 Convert", **get_label_style("subheading"))
+        action_title.grid(row=0, column=0, columnspan=2, pady=(20, 15), padx=20, sticky="w")
+
+        self.start_button = ctk.CTkButton(action_frame, text="Start Conversion", command=self.start_conversion, **get_button_style("primary", "large"))
+        self.start_button.grid(row=1, column=0, padx=20, pady=(0, 20))
 
         self.progress_bar = ctk.CTkProgressBar(action_frame)
-        self.progress_bar.pack(side="left", fill="x", expand=True)
+        self.progress_bar.grid(row=1, column=1, padx=(10, 20), pady=(0, 20), sticky="ew")
         self.progress_bar.set(0)
 
     def start_conversion(self):

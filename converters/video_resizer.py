@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
 from threading import Thread
-from moviepy.editor import VideoFileClip, vfx
+from moviepy import VideoFileClip, vfx
 from .base_converter import BaseConverter
 
 class VideoResizer(BaseConverter):

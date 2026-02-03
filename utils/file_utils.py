@@ -2,7 +2,7 @@ import os
 import shutil
 from typing import List, Tuple
 from pathlib import Path
-from moviepy.editor import VideoFileClip
+from moviepy import VideoFileClip
 
 
 def get_app_data_path(file_name: str) -> str:

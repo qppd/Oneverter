@@ -1,7 +1,6 @@
 customtkinter
 bcrypt
 authlib[httpx]
-python-dotenv
 Pillow
 moviepy
 pydub
@@ -9,5 +8,16 @@ PyJWT>=2.8.0
 cryptography>=41.0.0
 keyring>=24.0.0
 email-validator>=2.0.0
-pyotp>=2.9.0
 ratelimit>=2.2.1
+pyaudio
+mutagen
+opencv-python
+pysrt
+yt-dlp
+pyautogui
+sounddevice
+pdf2docx
+docx2pdf
+PyPDF2
+reportlab
+rembg

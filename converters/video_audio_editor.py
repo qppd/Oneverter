@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import os
 from threading import Thread
-from moviepy.editor import VideoFileClip, AudioFileClip, CompositeAudioClip
+from moviepy import VideoFileClip, AudioFileClip, CompositeAudioClip
 from .base_converter import BaseConverter
 
 class VideoAudioEditor(BaseConverter):
