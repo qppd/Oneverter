@@ -158,16 +158,16 @@ class DocumentConverterUI:
 
         # File selection
         file_frame = ctk.CTkFrame(self.parent)
-        file_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        file_frame.grid(row=0, column=0, padx=5, pady=5, sticky="ew")
         file_frame.grid_columnconfigure(0, weight=1)
         
-        ctk.CTkLabel(file_frame, text="1. Select Files", font=ctk.CTkFont(size=16, weight="bold")).grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        ctk.CTkLabel(file_frame, text="1. Select Files", font=ctk.CTkFont(size=12, weight="bold")).grid(row=0, column=0, padx=5, pady=(5, 2), sticky="w")
         
-        self.file_listbox = ctk.CTkTextbox(file_frame, height=100)
-        self.file_listbox.grid(row=1, column=0, padx=10, pady=5, sticky="ew")
+        self.file_listbox = ctk.CTkTextbox(file_frame, height=80)
+        self.file_listbox.grid(row=1, column=0, padx=5, pady=2, sticky="ew")
         
         button_frame = ctk.CTkFrame(file_frame, fg_color="transparent")
-        button_frame.grid(row=2, column=0, padx=10, pady=5, sticky="w")
+        button_frame.grid(row=2, column=0, padx=5, pady=2, sticky="w")
         
         browse_button = ctk.CTkButton(
             button_frame, text="📁 Browse Files", command=self.browse_files
@@ -178,35 +178,35 @@ class DocumentConverterUI:
         clear_button = ctk.CTkButton(
             button_frame, text="🗑️ Clear", command=self.clear_files
         )
-        clear_button.grid(row=0, column=1, padx=5)
+        clear_button.grid(row=0, column=1, padx=2)
         self.input_widgets.append(clear_button)
         
         # Output directory
         output_frame = ctk.CTkFrame(self.parent)
-        output_frame.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        output_frame.grid(row=1, column=0, padx=5, pady=5, sticky="ew")
         
-        ctk.CTkLabel(output_frame, text="2. Choose Output Location", font=ctk.CTkFont(size=16, weight="bold")).grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        ctk.CTkLabel(output_frame, text="2. Choose Output Location", font=ctk.CTkFont(size=12, weight="bold")).grid(row=0, column=0, padx=5, pady=(5, 2), sticky="w")
         
-        self.output_label = ctk.CTkLabel(output_frame, text="No directory selected.", text_color="gray", wraplength=400, justify="left")
-        self.output_label.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        self.output_label = ctk.CTkLabel(output_frame, text="No directory selected.", text_color="gray", wraplength=300, justify="left")
+        self.output_label.grid(row=1, column=0, padx=5, pady=2, sticky="w")
         
         output_button = ctk.CTkButton(
             output_frame, text="📂 Select Folder", command=self.browse_output_dir
         )
-        output_button.grid(row=2, column=0, padx=10, pady=(5, 10), sticky="w")
+        output_button.grid(row=2, column=0, padx=5, pady=(2, 5), sticky="w")
         self.input_widgets.append(output_button)
         
         # Conversion options & action
         action_frame = ctk.CTkFrame(self.parent)
-        action_frame.grid(row=2, column=0, padx=10, pady=10, sticky="nsew")
+        action_frame.grid(row=2, column=0, padx=5, pady=5, sticky="nsew")
         action_frame.grid_columnconfigure(0, weight=1)
         action_frame.grid_rowconfigure(3, weight=1)
 
-        ctk.CTkLabel(action_frame, text="3. Configure & Convert", font=ctk.CTkFont(size=16, weight="bold")).grid(row=0, column=0, padx=10, pady=(10,5), sticky="w")
+        ctk.CTkLabel(action_frame, text="3. Configure & Convert", font=ctk.CTkFont(size=12, weight="bold")).grid(row=0, column=0, padx=5, pady=(5,2), sticky="w")
         
         # Target format selection
         format_frame = ctk.CTkFrame(action_frame, fg_color="transparent")
-        format_frame.grid(row=1, column=0, padx=10, pady=5, sticky="w")
+        format_frame.grid(row=1, column=0, padx=5, pady=2, sticky="w")
         
         ctk.CTkLabel(format_frame, text="Target Format:").grid(row=0, column=0, padx=0)
         
@@ -214,21 +214,21 @@ class DocumentConverterUI:
         self.format_menu = ctk.CTkOptionMenu(
             format_frame, values=["docx", "pdf", "txt"], variable=self.format_var
         )
-        self.format_menu.grid(row=0, column=1, padx=10)
+        self.format_menu.grid(row=0, column=1, padx=5)
         self.input_widgets.append(self.format_menu)
         
         # Convert button
         self.convert_button = ctk.CTkButton(
             action_frame, text="🚀 Start Conversion", 
-            font=ctk.CTkFont(size=16, weight="bold"),
+            font=ctk.CTkFont(size=12, weight="bold"),
             command=self.start_conversion
         )
-        self.convert_button.grid(row=2, column=0, padx=10, pady=20)
+        self.convert_button.grid(row=2, column=0, padx=5, pady=10)
         self.input_widgets.append(self.convert_button)
         
         # --- Progress Area ---
         progress_area = ctk.CTkFrame(action_frame, fg_color="transparent")
-        progress_area.grid(row=3, column=0, sticky="sew", padx=10, pady=10)
+        progress_area.grid(row=3, column=0, sticky="sew", padx=5, pady=5)
         progress_area.grid_columnconfigure(0, weight=1)
         
         self.progress_bar = ctk.CTkProgressBar(progress_area)
