@@ -18,20 +18,20 @@ class DataConverterUI:
         content_frame.grid_columnconfigure(0, weight=1)
 
         # Icon
-        icon_label = ctk.CTkLabel(content_frame, text="📊", font=ctk.CTkFont(size=72))
-        icon_label.grid(row=0, column=0, sticky="s", pady=20)
+        icon_label = ctk.CTkLabel(content_frame, text="📊", font=ctk.CTkFont(size=48))
+        icon_label.grid(row=0, column=0, sticky="s", pady=5)
         
         # Title
         title_label = ctk.CTkLabel(
-            content_frame, text="Data Converter", font=ctk.CTkFont(size=32, weight="bold")
+            content_frame, text="Data Converter", font=ctk.CTkFont(size=20, weight="bold")
         )
-        title_label.grid(row=1, column=0, pady=10)
+        title_label.grid(row=1, column=0, pady=5)
         
         # Message
         message_label = ctk.CTkLabel(
             content_frame,
-            text="Coming Soon!\n\nFeatures:\n• Data format conversion (JSON ↔ CSV ↔ XML)\n• Data validation and cleaning\n• Schema mapping and transformation",
-            font=ctk.CTkFont(size=16),
+            text="Coming Soon!\n\nFeatures:\n• Data format conversion (CSV ↔ JSON ↔ XML)\n• Database export/import\n• Data validation and cleaning",
+            font=ctk.CTkFont(size=12),
             text_color="gray"
         )
-        message_label.grid(row=2, column=0, pady=20) 
+        message_label.grid(row=2, column=0, pady=5)
